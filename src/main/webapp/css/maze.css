@@ -1,0 +1,18 @@
+/*!Mapping Analyze CSS*/
+
+div.explore_area {
+    position:relative;
+}
+
+#viewBtn{
+    cursor: pointer;
+}
+
+.filterBtn_selected{
+    background: #66afe9;
+}
+
+.li_diff_selected{
+    background: #66afe9;
+}
+
