@@ -1,4 +1,4 @@
-var rootURL = "http://"+window.location.hostname+":8080/MappingAnalyzerServer/webresources";
+var rootURL = "http://"+window.location.hostname+"/MappingAnalyzerServer/webresources";
 var sys = arbor.ParticleSystem();
 sys.parameters({stiffness:900, repulsion:2000, gravity:true, dt:0.015});
 sys.renderer = Renderer("#viewport") ;
