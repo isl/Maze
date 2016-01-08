@@ -48,3 +48,13 @@ body .ui-autocomplete .ui-menu-item  {
 body .ui-autocomplete .ui-menu-item.ui-state-focus {
    background-color: rgba(0,0,255,0.2) !important;
 }
+
+/* mobile version */
+@media (max-width: 767px) {
+    body > div > header > nav.navbar > div {
+        display: none;
+    }
+    body footer {
+        display: none;
+    }
+}
