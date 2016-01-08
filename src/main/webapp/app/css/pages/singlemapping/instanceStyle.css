@@ -1,0 +1,106 @@
+/**
+ * Author : Anyfantis Nikolaos 
+ * Email: nanifant 'at' ics 'dot' forth 'dot' gr
+ * © Copyright 2015 FOUNDATION FOR RESEARCH & TECHNOLOGY - HELLAS
+ */
+
+#instance div.instanceGraph-container
+{
+    overflow: auto;
+}
+
+
+#instanceGraph
+{
+    border: 1px solid #000;
+    background: #fff;
+    min-height: 400px;
+}
+
+#instance .yellow_circle{
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: yellow;
+}
+
+#instance .green_square{
+    height: 20px;
+    width: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: greenyellow;
+}
+
+#instance .grey_square{
+    width: 0; 
+    height: 0; 
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid #808080;
+}
+
+#instance .curSelected{
+    border: 2px solid red;
+    height: 20px;
+    width: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#instance .prevSelected{
+    border: 2px solid #9900cc;
+    height: 20px;
+    width: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#instanceGraph .link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+#instanceGraph #green {
+  fill: green;
+}
+
+#instanceGraph .link.green {
+  stroke: green;
+}
+
+#instanceGraph .link.dashed {
+  stroke-dasharray: 0,2 1;
+}
+
+#instanceGraph circle {
+  fill: #ccc;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+#instanceGraph circle.currentClass {
+  fill: red;
+}
+
+#instanceGraph text:not(.linklabel) {
+  cursor: help;
+}
+
+#instanceGraph text {
+  font: 10px sans-serif;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+#instanceGraph .currentSelected{
+    stroke: #FF0000 !important;
+    stroke-width: 1.5px;
+}
+
+#instanceGraph .previousSelected{
+    stroke: #9900cc !important;
+    stroke-width: 2px;
+}

@@ -1,0 +1,39 @@
+/**
+ * Author : Anyfantis Nikolaos 
+ * Email: nanifant 'at' ics 'dot' forth 'dot' gr
+ * © Copyright 2015 FOUNDATION FOR RESEARCH & TECHNOLOGY - HELLAS
+ */
+
+#graphical_comparison  div.OntologyCenteredGraph-container
+{
+    width: 100%;
+    min-height: 400px;
+    overflow: auto;
+}
+
+
+#OntologyCenteredGraph {
+    border: 1px solid #000;
+    min-height: 600px;
+    background: #fff;
+}
+
+
+
+/*debug*/
+
+#graphical_comparison .node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+#graphical_comparison .node {
+  font: 10px sans-serif;
+}
+
+#graphical_comparison .link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}

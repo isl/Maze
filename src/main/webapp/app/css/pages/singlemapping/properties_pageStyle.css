@@ -1,0 +1,54 @@
+/**
+ * Author : Anyfantis Nikolaos 
+ * Email: nanifant 'at' ics 'dot' forth 'dot' gr
+ * © Copyright 2015 FOUNDATION FOR RESEARCH & TECHNOLOGY - HELLAS
+ */
+
+#properties_page h1 span{
+    font-size: 15px;
+    color: gray;
+}
+
+
+#properties_page  div.PropertiesGraph-container
+{
+    width: 95%;
+    min-height: 400px;
+    overflow: auto;
+    border: 1px solid #000;
+}
+
+
+#PropertiesGraph .link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+#PropertiesGraph #green {
+  fill: green;
+}
+
+#PropertiesGraph .link.green {
+  stroke: green;
+}
+
+#PropertiesGraph .link.dashed {
+  stroke-dasharray: 0,2 1;
+}
+
+#PropertiesGraph circle {
+  fill: #ccc;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+#PropertiesGraph circle.currentClass {
+  fill: red;
+}
+
+#PropertiesGraph text {
+  font: 10px sans-serif;
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}

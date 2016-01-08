@@ -1,0 +1,284 @@
+/*
+ * Copyright 2015 Institute of Computer Science,
+ * Foundation for Research and Technology - Hellas
+ * Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and limitations under the Licence.
+ *
+ * Contact:  POBox 1385, Heraklio Crete, GR-700 13 GREECE
+ * Tel:+30-2810-391632 Fax: +30-2810-391638 E-mail: isl@ics.forth.gr http://www.ics.forth.gr/isl
+ *
+ * Authors : Anyfantis Nikolaos (nanifant 'at' ics 'dot' forth 'dot' gr)
+ *
+ * This file is part of the Mapping Analyze (Maze) app.
+ */
+package gr.forth.ics.isl.maze.Utils;
+
+import gr.forth.ics.isl.maze.x3ml.X3ML;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashSet;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import gr.forth.ics.isl.maze.Resources;
+import java.io.Reader;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Set;
+import org.apache.log4j.Logger;
+
+/**
+ * Provides helpers and functions for retrieving files from 3M service.
+ * @author Anyfantis Nikos (nanifant 'at' ics 'dot' forth 'dot' gr)
+ */
+public class Utils {
+    private static Logger logger = Logger.getLogger(Utils.class);
+    
+    /**
+     * Unmarshal an X3ML file from 3M
+     * @param x3mlID
+     * @return an X3ML Instance
+     */
+    public static X3ML unmarshal_X3ML_WithID(String x3mlID) {
+        try {
+            String uri = Resources.Service_X3ML + x3mlID;
+            logger.info("Request for: " + uri);
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/xml");
+            InputStream inputStream = connection.getInputStream();
+            Reader reader = new InputStreamReader(inputStream,"UTF-8");
+            InputSource is = new InputSource(reader);
+            is.setEncoding("UTF-8");
+            
+            //SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            JAXBContext jc = JAXBContext.newInstance(X3ML.class);
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
+            X3ML x3ml = (X3ML) unmarshaller.unmarshal(is);
+            connection.disconnect();
+            return x3ml;
+        } catch (JAXBException ex) {
+            logger.error("Cannot retreive X3ML file form Service",ex);
+            return null;
+        } catch (MalformedURLException ex) {
+            logger.error("Cannot retreive X3ML file form Service",ex);
+            return null;
+        } catch (IOException ex) {
+            logger.error("Cannot retreive X3ML file form Service",ex);
+            return null;
+        }
+    }
+    
+    /**
+     * Gets X3ML file and converts to Document(xml).
+     * @param x3mlID String X3ML Id
+     * @return Document Document(xml)of X3ML
+     */
+    public static Document retreiveX3MLfile_toXML(String x3mlID){
+        try {
+            String uri = Resources.Service_X3ML + x3mlID;
+            logger.info("Request for: " + uri);
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/xml");
+            InputStream inputStream = connection.getInputStream();
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setValidating(false);
+            dbf.setIgnoringComments(true);
+            dbf.setIgnoringElementContentWhitespace(true);
+            dbf.setNamespaceAware(true);
+            DocumentBuilder db = null;
+            db = dbf.newDocumentBuilder();
+            db.setEntityResolver(new NullResolver());
+            
+            Reader reader = new InputStreamReader(inputStream,"UTF-8");
+            InputSource is = new InputSource(reader);
+            is.setEncoding("UTF-8");
+            
+            Document x3ml = db.parse(is);
+            connection.disconnect();
+            return x3ml;
+        } catch (MalformedURLException ex) {
+            logger.error("Cannot retreive X3ML file form Service",ex);
+            return null;
+        } catch (IOException ex) {
+            logger.error("Cannot retreive X3ML file form Service",ex);
+            return null;
+        } catch (SAXException | ParserConfigurationException ex) {
+            logger.error("Cannot retreive X3ML file form Service",ex);
+            return null;
+        }
+    }
+    
+    /**
+     * Gets source schema file and converts to Document(xml) from 3M service.
+     * @param filename String file name
+     * @return Document Document(xml)of X3ML
+     */
+    public static Document retreiveFile_from3M_toXML(String filename){
+        try {
+            String uri = Resources.Service_XML + URLEncoder.encode(filename, "UTF-8");
+            logger.info("Request for: " + uri);
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/xml");
+            InputStream xmlis = connection.getInputStream();
+            
+            Document doc = convert_InputStream_toXML(xmlis);
+            return doc;
+        } catch (IOException ex) {
+            logger.error("Cannot retreive file form 3M Service",ex);
+            return null;
+        } catch (SAXException | ParserConfigurationException ex) {
+            logger.error("Cannot convert Input Stream to Document",ex);
+            return null;
+        }
+    }
+    
+    /**
+     * Gets target schema file and converts to Model from 3M service.
+     * @param filename String file name
+     * @return Model from constructor: ModelFactory.createDefaultModel().
+     */
+    public static Model retreiveOntology_from3M_toBaseOntModel(String filename){
+        try {
+            String uri = Resources.Service_TargetSchema + URLEncoder.encode(filename, "UTF-8");
+            logger.info("Request for: " + uri);
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/xml");
+            InputStream ins = connection.getInputStream();
+            
+            final Model base = ModelFactory.createDefaultModel();
+            base.read(ins, null);
+            
+            connection.disconnect();
+            
+            return base;
+        } catch (Exception ex) {
+            logger.error("Cannot retreive target file form 3M Service ("+filename+")",ex);
+            return null;
+        } 
+    }
+    
+    /**
+     * Gets target records file and converts to Model from 3M service.
+     * @param filename String file name
+     * @return Model from constructor: ModelFactory.createDefaultModel().
+     */
+    public static Model retreiveTargetRecords_from3M_toBaseOntModel(String filename){
+        try {
+            String uri = Resources.Service_XML + URLEncoder.encode(filename, "UTF-8");
+            logger.info("Request for: " + uri);
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/xml");
+            InputStream ins = connection.getInputStream();
+            
+            final Model base = ModelFactory.createDefaultModel();
+            base.read(ins, null);
+            
+            connection.disconnect();
+            
+            return base;
+        } catch (Exception ex) {
+            logger.error("Cannot retreive target record file form 3M Service ("+filename+")",ex);
+            return null;
+        } 
+    }
+    
+    /**
+     * Converts an InputStream to String.
+     * @param is InputStream the input is
+     * @return String output.
+     */
+    public static String convert_InputStream_toString(InputStream is) {
+
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try {
+            br = new BufferedReader(new InputStreamReader(is));
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+        } catch (IOException ex) {
+            logger.error("Cannot convert input stream to string",ex);
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    logger.error("Cannot close BufferedReader",e);
+                }
+            }
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * Converts an InputStream to Document (XML).
+     * @param is InputStream the input is
+     * @return Document output.
+     */
+    public static Document convert_InputStream_toXML(InputStream is) throws SAXException, IOException, ParserConfigurationException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        dbf.setValidating(false);
+        dbf.setIgnoringComments(false);
+        dbf.setIgnoringElementContentWhitespace(true);
+        dbf.setNamespaceAware(true);
+        
+        DocumentBuilder db = null;
+        db = dbf.newDocumentBuilder();
+        db.setEntityResolver(new NullResolver());
+
+        return db.parse(is);
+    }
+    
+    /**
+     * Removes duplicates for arrayList of strings.
+     * @param list ArrayList of strings
+     * @return Document output.
+     */
+    public static ArrayList<String> removeDublicatesFromArrayList(ArrayList<String> list){
+        //Remove Dublicates in lists
+        Set<String> hs = new HashSet<>();
+        hs.addAll(list);
+        list.clear();
+        list.addAll(hs);
+        return list;
+    }
+    
+    //Custom Class
+    static class NullResolver implements EntityResolver {
+        public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
+            return new InputSource(new StringReader(""));
+        }
+    }
+}

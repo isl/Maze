@@ -1,0 +1,116 @@
+/**
+ * Author : Anyfantis Nikolaos 
+ * Email: nanifant 'at' ics 'dot' forth 'dot' gr
+ * © Copyright 2015 FOUNDATION FOR RESEARCH & TECHNOLOGY - HELLAS
+ */
+
+#instance_comparison div.instanceGraph-container
+{
+    overflow: auto;
+}
+
+
+#instanceGraph1, #instanceGraph2
+{
+    border: 1px solid #000;
+    background: #fff;
+    min-height: 400px;
+}
+
+#instance_comparison .yellow_circle{
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: yellow;
+}
+
+#instance_comparison .green_square{
+    height: 20px;
+    width: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: greenyellow;
+}
+
+#instance_comparison .grey_square{
+    width: 0; 
+    height: 0; 
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid #808080;
+}
+
+#instance_comparison .curSelected{
+    border: 2px solid red;
+    height: 20px;
+    width: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#instance_comparison .prevSelected{
+    border: 2px solid #9900cc;
+    height: 20px;
+    width: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#instanceGraph1 .link, 
+#instanceGraph2 .link {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+#instanceGraph1 #green, 
+#instanceGraph2 #green {
+  fill: green;
+}
+
+#instanceGraph1 .link.green, 
+#instanceGraph2 .link.green {
+  stroke: green;
+}
+
+#instanceGraph1 .link.dashed, 
+#instanceGraph2 .link.dashed {
+  stroke-dasharray: 0,2 1;
+}
+
+#instanceGraph1 circle,
+#instanceGraph2 circle {
+  fill: #ccc;
+  stroke: #333;
+  stroke-width: 1.5px;
+}
+
+#instanceGraph1 circle.currentClass,
+#instanceGraph2 circle.currentClass {
+  fill: red;
+}
+
+#instanceGraph1 text:not(.linklabel),
+#instanceGraph2 text:not(.linklabel) {
+  cursor: help;
+}
+
+#instanceGraph1 text,
+#instanceGraph2 text {
+  font: 10px sans-serif;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
+
+#instanceGraph1 .currentSelected,
+#instanceGraph2 .currentSelected {
+    stroke: #FF0000 !important;
+    stroke-width: 1.5px;
+}
+
+#instanceGraph1 .previousSelected,
+#instanceGraph2 .previousSelected {
+    stroke: #9900cc !important;
+    stroke-width: 2px;
+}

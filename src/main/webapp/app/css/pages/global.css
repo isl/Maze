@@ -1,0 +1,50 @@
+/**
+ * Author : Anyfantis Nikolaos 
+ * Email: nanifant 'at' ics 'dot' forth 'dot' gr
+ * © Copyright 2015 FOUNDATION FOR RESEARCH & TECHNOLOGY - HELLAS
+ */
+
+
+/*ALL PAGES*/
+.page_navigator,
+.page_navigator_mirror
+{
+    cursor: pointer;
+}
+
+.loadingFromServer
+{
+    color: white;
+    font-size: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.loadingFromServer .requestList
+{
+    display: none;
+}
+
+
+.box-body .attachment-img{
+    height: 70px;
+    width: 70px;
+}
+
+/* Comparison of mappings home page*/
+#compareAlert{
+    display: none;
+}
+
+/* autocomplete css */
+body .ui-autocomplete {
+  background-color: white !important;
+}
+
+body .ui-autocomplete .ui-menu-item  {
+   
+}
+
+body .ui-autocomplete .ui-menu-item.ui-state-focus {
+   background-color: rgba(0,0,255,0.2) !important;
+}

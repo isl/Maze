@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright 2015 Institute of Computer Science,
+Foundation for Research and Technology - Hellas
+Licensed under the EUPL, Version 1.1 or - as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
+
+Unless required by applicable law or agreed to in writing, software distributed under the Licence is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and limitations under the Licence.
+
+Contact:  POBox 1385, Heraklio Crete, GR-700 13 GREECE
+Tel:+30-2810-391632 Fax: +30-2810-391638 E-mail: isl@ics.forth.gr http://www.ics.forth.gr/isl
+
+Authors : Anyfantis Nikolaos (nanifant 'at' ics 'dot' forth 'dot' gr)
+
+This file is part of the Mapping Analyze (Maze) app.
+
+-->
 
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 	 version="3.1">
+    
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>root-maze</param-value>
+    </context-param>
+    
     <servlet>
         <servlet-name>jersey-serlvet</servlet-name>
         <servlet-class>
@@ -11,7 +39,7 @@
         </servlet-class>
         <init-param>
              <param-name>com.sun.jersey.config.property.packages</param-name>
-             <param-value>gr.forth.ics.isl.mappinganalyzer.restservices</param-value>
+             <param-value>gr.forth.ics.isl.maze.restservices</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

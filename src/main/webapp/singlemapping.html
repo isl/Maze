@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="shortcut icon" href="app/img/maze.ico" type="image/x-icon" />
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Maze - Mapping Analyzer</title>
+
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport"> <!-- Tell the browser to be responsive to screen width -->
+
+        <link rel="stylesheet" href="app/css/libs/bootstrap/css/bootstrap.min.css">  <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="app/css/libs/font-awesome.min.css"> <!-- Font Awesome -->
+        <link rel="stylesheet" href="app/css/libs/ionicons.min.css"> <!-- Ionicons -->
+        <link rel="stylesheet" href="app/css/libs/AdminLTE.min.css"> <!-- Theme style -->
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="app/css/libs/skins/_all-skins.min.css">
+        <link rel="stylesheet" href="app/plugins/iCheck/flat/blue.css"> <!-- iCheck -->
+        <link rel="stylesheet" href="app/plugins/morris/morris.css"> <!-- Morris chart -->
+        <link rel="stylesheet" href="app/plugins/jvectormap/jquery-jvectormap-1.2.2.css"> <!-- jvectormap -->
+        <link rel="stylesheet" href="app/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css"> <!-- bootstrap wysihtml5 - text editor -->
+
+        <!-- CSS LIBRARIES -->
+        <link rel="stylesheet" type="text/css" href="app/css/libs/page_transitions.css">
+        <link rel="stylesheet" type="text/css" href="app/css/libs/animations.css">
+        <link rel="stylesheet" type="text/css" href="app/css/libs/joint.css">
+
+        <!-- MAZE CSS -->
+        <link rel="stylesheet" href="app/css/pages/global.css">
+        <link rel="stylesheet" href="app/css/pages/singlemapping/x3ml_overviewStyle.css">
+        <link rel="stylesheet" href="app/css/pages/singlemapping/source_schemaStyle.css">
+        <link rel="stylesheet" href="app/css/pages/singlemapping/target_schemaStyle.css">
+        <link rel="stylesheet" href="app/css/pages/singlemapping/ontology_overviewStyle.css">
+        <link rel="stylesheet" href="app/css/pages/singlemapping/source_percentageStyle.css">
+        <link rel="stylesheet" href="app/css/pages/singlemapping/target_percentageStyle.css">
+        <link rel="stylesheet" href="app/css/pages/singlemapping/properties_pageStyle.css">
+        <link rel="stylesheet" href="app/css/pages/singlemapping/instanceStyle.css">
+
+    </head>
+    <body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+
+        <div class="wrapper">
+
+            <header class="main-header">
+                <!-- Logo -->
+                <a href="index.html" class="logo">
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini"><b>Ma</b>ze</span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><b>Ma</b>ppingAnaly<b>ze</b>r</span>
+                </a>
+                <!-- Header Navbar: style can be found in header.less -->
+                <nav class="navbar navbar-static-top" role="navigation">
+                    <!-- Sidebar toggle button-->
+                    <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                        <span class="sr-only">Toggle navigation</span>
+                    </a>
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <div class="loadingFromServer">
+                                <!--<div class="loadingMessage">
+                                    <span>Analyzing...</span>
+                                    <i class="fa fa-refresh fa-spin"></i>
+                                </div>-->
+                                <ul class="requestList">
+                                    <!--<li>requestType</li>-->
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="http://www.ics.forth.gr/isl" target="_blank" class="dropdown-toggle" >
+                                    <span>ICS/ISL - FORTH</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside class="main-sidebar">
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+                    <!-- Sidebar user panel 
+                    <div class="user-panel">
+                        <div class="pull-left image">
+                            <img src="app/img/guestAvatar.png" class="img-circle" alt="User Image">
+                        </div>
+                        <div class="pull-left info">
+                            <p>Guest</p>
+                            <a href="#"><i class="fa fa-circle text-danger"></i> Login/Register</a>
+                        </div>
+                    </div>-->
+                    <!-- search form 
+                    <form action="#" method="get" class="sidebar-form">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>-->
+                    <!-- /.search form -->
+                    <!-- sidebar menu: : style can be found in sidebar.less -->
+                    <ul class="sidebar-menu">
+                        <li class="header">MAIN NAVIGATION</li>
+                        <li  class="active">
+                            <div class="page_navigator" goto="home">
+                                <i class="fa fa-home"></i> <span>Home</span>
+                            </div>
+                        </li>
+                        <li class="treeview">
+                            <div>
+                                <i class="fa fa-file-o"></i> <span>Single Mapping</span> <i class="fa fa-angle-left pull-right"></i>
+                            </div>
+                            <ul class="treeview-menu">
+                                <li><div class="page_navigator" goto="source_schema"><i class="fa fa-circle-o"></i> Source Schema</div></li>
+                                <li><div class="page_navigator" goto="target_schema"><i class="fa fa-circle-o"></i> Target Schema</div></li>
+                                <li><div class="page_navigator" goto="warnings"><i class="fa fa-circle-o"></i> Warnings</div></li>
+                                <li><div class="page_navigator" goto="errors"><i class="fa fa-circle-o"></i> Errors</div></li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <div>
+                                <i class="fa fa-bar-chart-o"></i> <span>Overview Graphs</span> <i class="fa fa-angle-left pull-right"></i>
+                            </div>
+                            <ul class="treeview-menu">
+                                <li><div class="page_navigator" goto="ontology_overview"><i class="fa fa-circle-o"></i> Mapping-centered</div></li>
+                                <li><div class="page_navigator" goto="x3ml_overview"><i class="fa fa-circle-o"></i> X3ML-centered</div></li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <div>
+                                <i class="fa fa-pie-chart"></i> <span>Percentage Coverage</span> <i class="fa fa-angle-left pull-right"></i>
+                            </div>
+                            <ul class="treeview-menu">
+                                <li><div class="page_navigator" goto="source_percentage"><i class="fa fa-circle-o"></i> Source Schema</div></li>
+                                <li><div class="page_navigator" goto="target_percentage"><i class="fa fa-circle-o"></i> Target Schema</div></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <div class="page_navigator" goto="instance">
+                                <i class="fa fa-share-alt"></i>  <span>Instance Representation</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="page_navigator" goto="evolution">
+                                <i class="fa fa-clock-o"></i>  <span>Evolution</span>
+                            </div>
+                        </li>
+
+                        <li class="header">EXTRAS</li>
+                        <li><a href="http://139.91.183.3/3M/"><i class="fa fa-circle-o text-yellow"></i> <span>Mapping Memory Manager</span></a></li>
+                        <li><a href="about.html"><i class="fa fa-circle-o text-aqua"></i> <span>About</span></a></li>
+                    </ul>
+                </section>
+                <!-- /.sidebar -->
+            </aside>
+
+            <div id="pt-main" class="pt-perspective">
+
+                <!--************************************
+                *       HOME Page
+                ****************************************-->
+                <div id="home" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Mapping Overview
+                                <small></small>
+                            </h1>
+                            <ol class="breadcrumb">
+                                <li><i class="fa fa-home"></i> Home</li>
+                            </ol>
+                        </section>
+
+                        <!-- Main content -->
+                        <section class="content">
+                            <!-- Small boxes (Stat box) -->
+                            <div class="row">
+                                <div class="col-lg-3 col-xs-6">
+                                    <!-- small box -->
+                                    <div class="small-box bg-aqua">
+                                        <div class="inner">
+                                            <h3>Source Schema</h3>
+                                            <p class="source_name"></p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="fa fa-table"></i>
+                                        </div>
+                                        <div class="small-box-footer page_navigator_mirror" goto="source_schema">More info <i class="fa fa-arrow-circle-right"></i></div>
+                                    </div>
+                                </div><!-- ./col -->
+                                <div class="col-lg-3 col-xs-6">
+                                    <!-- small box -->
+                                    <div class="small-box bg-green">
+                                        <div class="inner">
+                                            <h3>Target Schema</h3>
+                                            <p class="target_name"></p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="fa fa-bullseye"></i>
+                                        </div>
+                                        <div class="small-box-footer page_navigator_mirror" goto="target_schema">More info <i class="fa fa-arrow-circle-right"></i></div>
+                                    </div>
+                                </div><!-- ./col -->
+                                <div class="col-lg-3 col-xs-6">
+                                    <!-- small box -->
+                                    <div class="small-box bg-yellow">
+                                        <div class="inner">
+                                            <h3>Warnings</h3>
+                                            <p id="warningsCount">0</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="fa fa-bell-o"></i>
+                                        </div>
+                                        <div class="small-box-footer page_navigator_mirror" goto="warnings">More info <i class="fa fa-arrow-circle-right"></i></div>
+                                    </div>
+                                </div><!-- ./col -->
+                                <div class="col-lg-3 col-xs-6">
+                                    <!-- small box -->
+                                    <div class="small-box bg-red">
+                                        <div class="inner">
+                                            <h3>Errors</h3>
+                                            <p id="errorsCount">0</p>
+                                        </div>
+                                        <div class="icon">
+                                            <i class="fa fa-exclamation-circle"></i>
+                                        </div>
+                                        <div class="small-box-footer page_navigator_mirror" goto="errors">More info <i class="fa fa-arrow-circle-right"></i></div>
+                                    </div>
+                                </div><!-- ./col -->
+                            </div><!-- /.row -->
+                            <!-- Main row -->
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">General Coverage Percentages</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div id="percOverview" class="box-body">
+                                            <div class="col-xs-6 text-center">
+                                                <div class="row">
+                                                    <h4>Source Schema</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-6 text-center">
+                                                        <input type="text" class="covTables knob" value="0" data-width="90" data-height="90" data-fgColor="#3c8dbc" data-readonly="true">
+                                                        <div class="knob-label">Covered Parent Elements</div>
+                                                    </div><!-- ./col -->
+                                                    <div class="col-xs-6 text-center">
+                                                        <input type="text" class="covAttrs knob" value="0" data-width="90" data-height="90" data-fgColor="#3c8dbc" data-readonly="true">
+                                                        <div class="knob-label">Covered Child Elements</div>
+                                                    </div><!-- ./col -->
+                                                </div>
+                                                <div class="row">
+                                                    <input type="text" class="covSS knob" value="0" data-width="90" data-height="90" data-fgColor="#3c8dbc" data-readonly="true">
+                                                    <div class="knob-label">Average Coverage</div>
+                                                </div>
+                                                <div class="box-footer clearfix">
+                                                    <button class="pull-right btn btn-default page_navigator_mirror" goto="source_percentage">More Info <i class="fa fa-arrow-circle-right"></i></button>
+                                                </div>
+                                            </div>  
+                                            <div class="col-xs-6 text-center">
+                                                <div class="row">
+                                                    <h4>Target Schema</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-6 text-center">
+                                                        <input type="text" class="covClasses knob" value="0" data-width="90" data-height="90" data-fgColor="#00a65a" data-readonly="true">
+                                                        <div class="knob-label">Covered Classes</div>
+                                                    </div><!-- ./col -->
+                                                    <div class="col-xs-6 text-center">
+                                                        <input type="text" class="covProps knob" value="0" data-width="90" data-height="90" data-fgColor="#00a65a" data-readonly="true">
+                                                        <div class="knob-label">Covered Properties</div>
+                                                    </div><!-- ./col -->
+                                                </div>
+                                                <div class="row">
+                                                    <input type="text" class="covTS knob" value="0" data-width="90" data-height="90" data-fgColor="#00a65a" data-readonly="true">
+                                                    <div class="knob-label">Average Coverage</div>
+                                                </div>
+                                                <div class="box-footer clearfix">
+                                                    <button class="pull-right btn btn-default page_navigator_mirror" goto="target_percentage">More Info <i class="fa fa-arrow-circle-right"></i></button>
+                                                </div>
+                                            </div>  
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div><!-- /.col -->
+
+                            </div>
+                            <div class="row">
+                                <section class="col-lg-6 connectedSortable">
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-bar-chart-o"></i>
+                                            <h3 class="box-title">Mapping-centered overview</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="attachment-block clearfix">
+                                                <img class="attachment-img" src="app/img/3d.jpg" alt="attachment image">
+                                                <div class="attachment-pushed">
+                                                    <div class="attachment-text">
+                                                        This functionality provides a 3D representation of source and target schema
+                                                        regarding mapping rules of the X3ML. The floor represents the source schema, 
+                                                        while the target schema is depicted at the upper level.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="box-footer clearfix">
+                                                <button class="pull-right btn btn-default page_navigator_mirror" goto="ontology_overview">View Graph <i class="fa fa-arrow-circle-right"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section class="col-lg-6 connectedSortable">
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-bar-chart-o"></i>
+                                            <h3 class="box-title">X3ML-centered overview</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="attachment-block clearfix">
+                                                <img class="attachment-img" src="app/img/x3ml_centered.jpg" alt="attachment image">
+                                                <div class="attachment-pushed">
+                                                    <div class="attachment-text">
+                                                        As regards the X3ML mapping overview, it provides the ability to understand the structure of an X3ML file and 
+                                                        navigate through the assertions between the source and target schema.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="box-footer clearfix">
+                                                <button class="pull-right btn btn-default page_navigator_mirror" goto="x3ml_overview">View Graph <i class="fa fa-arrow-circle-right"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="row">
+                                <section class="col-lg-6 connectedSortable">
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-share-alt"></i>
+                                            <h3 class="box-title">Instance Representation</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="attachment-block clearfix">
+                                                <img class="attachment-img" src="app/img/instance.jpg" alt="attachment image">
+                                                <div class="attachment-pushed">
+                                                    <div class="attachment-text">
+                                                        Instance representation tries to depict the result of the mapping,
+                                                        providing an example. This functionality requires an 
+                                                        export sample from the X3ML Engine.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="box-footer clearfix">
+                                                <button class="pull-right btn btn-default page_navigator_mirror" goto="instance">More Info <i class="fa fa-arrow-circle-right"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section class="col-lg-6 connectedSortable">
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-clock-o"></i>
+                                            <h3 class="box-title">Tracking Changes Over Time</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="attachment-block clearfix">
+                                                <img class="attachment-img" src="app/img/maze-logo.png" alt="attachment image">
+                                                <div class="attachment-pushed">
+                                                    <div class="attachment-text">
+                                                        The system provides the capability of monitoring the evolution of
+                                                        a mapping over time regarding the transformation rules and the evolution 
+                                                        of the source and target schema.  
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="box-footer clearfix">
+                                                <button class="pull-right btn btn-default page_navigator_mirror" goto="evolution">More Info <i class="fa fa-arrow-circle-right"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </section><!-- /.content -->
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Source Schema Page
+                ****************************************-->
+                <div id="source_schema" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Source Schema
+                                <small></small>
+                            </h1>
+                        </section>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">Source Info</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body source_schema_info">
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Schema</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="schema"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Type</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="type"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Version</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="version"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <div class="row">
+                                                    <h4>Collection</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="collection"></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-database"></i>
+                                            <h3 class="box-title">Sample data</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Type</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="typeSample"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Total Parent Elements</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="totalTablesSample"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Total Child Elements</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="totalAttrsSample"></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-exclamation-circle"></i>
+                                            <h3 class="box-title">Define undesired data for Mapping</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-xs-3">
+                                                    <h4>Search Fields</h4>
+                                                </div>
+                                                <div class="col-xs-8">
+                                                    <div class="input-group">
+                                                        <input id="source_schema_search_ALL" type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+                                                        <div class="input-group-btn">
+                                                            <button id="addExcludeListSSBTN" class="btn btn-sm btn-default"><i class="fa fa-plus"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="excludeTableSS" class="table table-hover">
+                                                        <tr>
+                                                            <th>Field</th>
+                                                            <th>Covered</th>
+                                                            <th>Status</th>
+                                                            <th>Remove</th>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="box-footer clearfix">
+                                            <div class="pull-left excludingResultsLabel"></div>
+                                            <button id="saveExcludingListSS" class="pull-right btn btn-default">
+                                                <i class="fa fa-floppy-o"></i> Save &  Analyze 
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-share-alt"></i>
+                                            <h3 class="box-title">Source Schema Graph</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div id="source_schema_graph"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Target Schema Page
+                ****************************************-->
+                <div id="target_schema" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Target Schema
+                                <small></small>
+                            </h1>
+                        </section>
+                        <section class="content">
+
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">Target Info</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body table-responsive no-padding">
+                                            <table class="table table-hover targetSchemataTable">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Schema</th>
+                                                    <th>Type</th>
+                                                    <th>Version</th>
+                                                    <th>Schema File</th>
+                                                </tr>
+                                            </table>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-bar-chart-o"></i>
+                                            <h3 class="box-title">Target Schema Statistics</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body statistics">
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Schema Type</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="type"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Total Classes</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="classes"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Total Properties</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="properties"></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-exclamation-circle"></i>
+                                            <h3 class="box-title">Define undesired data for Mapping</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-xs-3">
+                                                    <h4>Search Fields</h4>
+                                                </div>
+                                                <div class="col-xs-9">
+                                                    <div class="input-group">
+                                                        <input id="target_schema_search_ALL" type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+                                                        <div class="input-group-btn">
+                                                            <button id="addExcludeListTSBTN" class="btn btn-sm btn-default"><i class="fa fa-plus"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <button id="loadDefaultCidocExcludeListBTN" class="pull-right btn btn-default">
+                                                        <i class="fa fa-bullhorn"></i> Load Default for CIDOC-CRM
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <table id="excludeTableTS" class="table table-hover">
+                                                        <tr>
+                                                            <th>URI</th>
+                                                            <th>Covered</th>
+                                                            <th>Status</th>
+                                                            <th>Remove</th>
+                                                        </tr>
+                                                        <!--<tr>
+                                                            <td>Entity</td>
+                                                            <td>Class</td>
+                                                            <td><span class="label label-warning">Pending</span></td>
+                                                            <td><button class="btn btn-danger btn-flat" type="button"><i class="fa fa-times"></i></button></td>
+                                                        </tr>-->
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="box-footer clearfix">
+                                            <div class="pull-left excludingResultsLabel"></div>
+                                            <button id="saveExcludingListTS" class="pull-right btn btn-default">
+                                                <i class="fa fa-floppy-o"></i> Save &  Analyze 
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-share-alt"></i>
+                                            <h3 class="box-title">Target Schema Graph</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-12">
+                                                <div class="nav-tabs-custom">
+                                                    <ul class="nav nav-tabs">
+                                                        <li id="TSClassesGraphTabBTN"  class="active"><a href="#tab_2-2" data-toggle="tab">Classes</a></li>
+                                                        <li id="TSPropertiesGraphTabBTN"><a href="#tab_1-1" data-toggle="tab">Properties</a></li>
+                                                    </ul>
+                                                    <div class="tab-content">
+                                                        <div class="tab-pane active" id="tab_2-2">
+                                                            <div class="row">
+                                                                <div class="col-xs-12">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12">
+                                                                            <h4>Classes Graph</h4>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-7">
+                                                                            <div class="input-group">
+                                                                                <input id="target_schema_search" type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+                                                                                <div class="input-group-btn">
+                                                                                    <button id="target_schema_search_BTN" class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+                                                                                </div>
+                                                                            </div>
+                                                                            <br>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12">
+                                                                            <div class="TSGraphDisplay-container">
+                                                                                <div id="TSGraphDisplay"></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-12">
+                                                                    <div class="row">
+                                                                        <div id="targetSelectionStatistics" class="col-xs-12">
+                                                                            <div class="row">
+                                                                                <div class="col-xs-12">
+                                                                                    <h4>Selection Details</h4>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-xs-12">
+                                                                                    <div class="col-xs-7">
+
+                                                                                        <div class="row">
+                                                                                            <div class="col-xs-2">
+                                                                                                <div class="row">
+                                                                                                    <h4>Type</h4>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <h5 class="type">-</h5>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-xs-4">
+                                                                                                <div class="row">
+                                                                                                    <h4>Label</h4>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <h5 class="name">-</h5>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-xs-6">
+                                                                                                <div class="row">
+                                                                                                    <h4>URI</h4>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <h5 class="uri">-</h5>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="row">
+                                                                                            <div class="col-xs-11">
+                                                                                                <div class="row">
+                                                                                                    <h4>Comments</h4>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <h5 class="commentInfo">-</h5>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                    <div class="col-xs-5">
+                                                                                        <div class="row">
+                                                                                            <button id="viewPropertiesBTN" class="btn btn-default page_navigator" goto="properties_page">
+                                                                                                <i class="fa fa-share-alt"></i> View Properties 
+                                                                                            </button>
+                                                                                        </div>
+                                                                                        <div class="row">
+                                                                                            <h4>SubClasses</h4>
+                                                                                        </div>
+                                                                                        <div class="row">
+                                                                                            <h5 class="subclasses">-</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="tab-pane" id="tab_1-1">
+                                                            <div class="row">
+                                                                <div class="col-xs-12">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12">
+                                                                            <h4>Properties Graph</h4>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-7">
+                                                                            <div class="input-group">
+                                                                                <input id="target_schema_search_properties" type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+                                                                                <div class="input-group-btn">
+                                                                                    <button id="target_schema_search_properties_BTN" class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+                                                                                </div>
+                                                                            </div>
+                                                                            <br>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12">
+                                                                            <div class="TSGraphDisplay-container">
+                                                                                <div id="TSGraphDisplay_properties"></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-12">
+                                                                    <div class="row">
+                                                                        <div id="targetSelectionStatistics_properties" class="col-xs-12">
+                                                                            <div class="row">
+                                                                                <div class="col-xs-12">
+                                                                                    <h4>Selection Details</h4>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-xs-12">
+                                                                                    <div class="row">
+                                                                                        <div class="col-xs-12">
+                                                                                            <div class="col-xs-1">
+                                                                                                <div class="row">
+                                                                                                    <h4>Type</h4>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <h5 class="type">-</h5>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-xs-2">
+                                                                                                <div class="row">
+                                                                                                    <h4>Label</h4>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <h5 class="name">-</h5>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="col-xs-4">
+                                                                                                <div class="row">
+                                                                                                    <h4>URI</h4>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <h5 class="uri">-</h5>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                            <div class="col-xs-5">
+                                                                                                <div class="row">
+                                                                                                    <h4>Comments</h4>
+                                                                                                </div>
+                                                                                                <div class="row">
+                                                                                                    <h5 class="commentInfo">-</h5>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>    
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-xs-12">
+                                                                                    <div class="col-xs-6">
+                                                                                        <div class="row">
+                                                                                            <h4>Domain</h4>
+                                                                                        </div>
+                                                                                        <div class="row">
+                                                                                            <h5 class="domain">-</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-xs-6">
+                                                                                        <div class="row">
+                                                                                            <h4>Range</h4>
+                                                                                        </div>
+                                                                                        <div class="row">
+                                                                                            <h5 class="range">-</h5>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div><!-- /.tab-pane -->
+                                                    </div><!-- /.tab-content -->
+                                                </div><!-- nav-tabs-custom -->
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Properties Page
+                ****************************************-->
+                <div id="properties_page" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <button class="btn btn-default page_navigator" goto="target_schema">
+                                <i class="fa fa-arrow-circle-left"></i> Back to Target Schema 
+                            </button>
+                            <br>
+                            <h1>
+                                Properties <span></span>
+                            </h1>
+                        </section>
+                        <section class="content">
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <i class="fa fa-share-alt"></i>
+                                            <h3 class="box-title">Properties Graph</h3>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-12">
+                                                <div class="row">
+                                                    <button id="SubclassesPropertiesBTN" class="btn btn-default">SubClasses</button>
+                                                    <button id="OutgoingPropertiesBTN" class="btn btn-default">Outgoing Properties</button>
+                                                    <button id="IncomingPropertiesBTN" class="btn btn-default">Incoming Properties</button>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="PropertiesGraph-container">
+                                                        <div id="PropertiesGraph"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                                <div class="row">
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-share-alt"></i>
+                                            <h3 class="box-title">Triangles</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-12">
+                                                <div class="row">
+                                                    <table id="trianglesTable" class="table table-hover">
+                                                        <tr>
+                                                            <th>Property</th>
+                                                            <th>B Class</th>
+                                                            <th>Property</th>
+                                                            <th>C Class</th>
+                                                            <th>Property</th>
+                                                            <th>View</th>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Warnings Page
+                ****************************************-->
+                <div id="warnings" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Warnings
+                                <small></small>
+                            </h1>
+                        </section>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <i class="fa fa-bell-o"></i>
+                                            <h3 class="box-title">List</h3>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <ul id="warningsLIST" class="todo-list">
+
+                                            </ul>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Errors Page
+                ****************************************-->
+                <div id="errors" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Errors
+                                <small></small>
+                            </h1>
+                        </section>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <i class="fa fa-exclamation-circle"></i>
+                                            <h3 class="box-title">List</h3>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <ul id="errorsLIST" class="todo-list">
+
+                                            </ul>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Ontology Overview Page
+                ****************************************-->
+                <div id="ontology_overview" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Mapping-centered overview
+                                <small></small>
+                            </h1>
+                        </section>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <i class="fa fa-bar-chart-o"></i>
+                                            <h3 class="box-title">Graph</h3>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-12">
+                                                <div class="row">
+                                                    <div class="OntologyCenteredGraph-container">
+                                                        <div id="OntologyCenteredGraph"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+                            <div class="row OntologyCenteredGraph-Debug">
+                                <div class="col-xs-12">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <i class="fa fa-bar-chart-o"></i>
+                                            <h3 class="box-title"></h3>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-12">
+                                                <div class="row">
+                                                    <div class="OntologyCenteredGraph-containerDebug">
+                                                        <div id="OntologyCenteredGraphDebug"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       X3ML Overview Page
+                ****************************************-->
+                <div id="x3ml_overview" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                X3ML-centered overview
+                                <small></small>
+                            </h1>
+                        </section>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">X3ML Info</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Title</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="titleInfo"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Source Type</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="sourceTypeInfo"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Version</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="versionInfo"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <div class="row">
+                                                    <h4>General Description</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="descrInfo"></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">X3ML-centered Graph</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-11">
+                                                <div class="row filterBtns">
+                                                    <strong>Filters:</strong>
+                                                    <button class="btn btn-default filterTNBtn selected">TargetNodes</button>
+                                                    <button class="btn btn-default filterSNBtn selected">SourceNodes</button>
+                                                    <button class="btn btn-default filterLinksBtn">Links</button>
+                                                    <button class="btn btn-default pull-right zoomInButton"><i class="fa fa-plus"></i> Zoom In</button>
+                                                    <button class="btn btn-default pull-right zoomOutButton"><i class="fa fa-minus"></i> Zoom Out</button>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <canvas id="X3MLOverviewGraph" width="800" height="600"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Source Percentage Page
+                ****************************************-->
+                <div id="source_percentage" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Percentage Coverage of Source Schema
+                                <small></small>
+                            </h1>
+                        </section>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-database"></i>
+                                            <h3 class="box-title">Sample data</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Type</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="typeSample"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Total Parent Elements</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="totalTablesSample"></h5>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <div class="row">
+                                                    <h4>Total Child Elements</h4>
+                                                </div>
+                                                <div class="row">
+                                                    <h5 class="totalAttrsSample"></h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid direct_metrics">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">Coverage Percentages: Direct Metrics</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-12 text-center">
+                                                <div class="row">
+                                                    <div class="col-xs-4 text-center">
+                                                        <input type="text" class="covTables knob" value="0" data-width="90" data-height="90" data-fgColor="#3c8dbc" data-readonly="true">
+                                                        <div class="knob-label">Covered Parent Elements</div>
+                                                    </div><!-- ./col -->
+                                                    <div class="col-xs-4 text-center">
+                                                        <input type="text" class="covAttrs knob" value="0" data-width="90" data-height="90" data-fgColor="#3c8dbc" data-readonly="true">
+                                                        <div class="knob-label">Covered Child Elements</div>
+                                                    </div><!-- ./col -->
+                                                    <div class="col-xs-4 text-center">
+                                                        <input type="text" class="covSS knob" value="0" data-width="90" data-height="90" data-fgColor="#3c8dbc" data-readonly="true">
+                                                        <div class="knob-label">Average Coverage</div>
+                                                    </div><!-- ./col -->
+                                                </div>
+                                            </div>  
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div><!-- /.col -->
+
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-pie-chart"></i>
+                                            <h3 class="box-title">Covered Elements</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-xs-10">
+                                                    <div class="col-xs-3">
+                                                        <div class="row">
+                                                            <h4>Name</h4>
+                                                        </div>
+                                                        <div class="row">
+                                                            <h5 class="SStreeCoverage_name"></h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-3">
+                                                        <div class="row">
+                                                            <h4>Covered</h4>
+                                                        </div>
+                                                        <div class="row">
+                                                            <h5 class="SStreeCoverage_covered"></h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div id="SStreeCoverage"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Target Percentage Page
+                ****************************************-->
+                <div id="target_percentage" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Percentage Coverage of Target Schema
+                                <small></small>
+                            </h1>
+                        </section>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid direct_metrics">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">Coverage Percentages: Direct Metrics</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-12 text-center">
+                                                <div class="row">
+                                                    <div class="col-xs-4 text-center">
+                                                        <input type="text" class="covClasses knob" value="0" data-width="90" data-height="90" data-fgColor="#00a65a" data-readonly="true">
+                                                        <div class="knob-label">Covered Classes</div>
+                                                    </div><!-- ./col -->
+                                                    <div class="col-xs-4 text-center">
+                                                        <input type="text" class="covProps knob" value="0" data-width="90" data-height="90" data-fgColor="#00a65a" data-readonly="true">
+                                                        <div class="knob-label">Covered Properties</div>
+                                                    </div><!-- ./col -->
+                                                    <div class="col-xs-4 text-center">
+                                                        <input type="text" class="covTS knob" value="0" data-width="90" data-height="90" data-fgColor="#00a65a" data-readonly="true">
+                                                        <div class="knob-label">Average Coverage</div>
+                                                    </div><!-- ./col -->
+                                                </div>
+                                            </div>  
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div><!-- /.col -->
+
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid leaves_metrics">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">Coverage Percentages: Ancestors – descendants Metrics</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="col-xs-12 text-center">
+                                                <div class="row">
+                                                    <div class="col-xs-4 text-center">
+                                                        <input type="text" class="covClasses knob" value="0" data-width="90" data-height="90" data-fgColor="#00a65a" data-readonly="true">
+                                                        <div class="knob-label">Covered Classes</div>
+                                                    </div><!-- ./col -->
+                                                    <div class="col-xs-4 text-center">
+                                                        <input type="text" class="covProps knob" value="0" data-width="90" data-height="90" data-fgColor="#00a65a" data-readonly="true">
+                                                        <div class="knob-label">Covered Properties</div>
+                                                    </div><!-- ./col -->
+                                                    <div class="col-xs-4 text-center">
+                                                        <input type="text" class="covTS knob" value="0" data-width="90" data-height="90" data-fgColor="#00a65a" data-readonly="true">
+                                                        <div class="knob-label">Average Coverage</div>
+                                                    </div><!-- ./col -->
+                                                </div>
+                                            </div>  
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div><!-- /.col -->
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">Target Info</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body table-responsive no-padding">
+                                            <table class="table table-hover targetSchemataMetricsTable">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Schema</th>
+                                                    <th>Type</th>
+                                                    <th>Version</th>
+                                                    <th>Schema File</th>
+                                                </tr>
+                                            </table>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-bar-chart-o"></i>
+                                            <h3 class="box-title">Target Schema Statistics</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="chart">
+                                                <canvas class="barChart" style="height:230px"></canvas>
+                                            </div>
+                                            <div class="box-footer clearfix">
+                                                <div class="directMetricChartLabel text-center">Direct Metrics</div>
+                                                <div class="leavesMetricChartLabel text-center">Ancestors – descendants Metrics</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!-- jQuery Knob -->
+                                    <div class="box box-solid">
+                                        <div class="box-header">
+                                            <i class="fa fa-pie-chart"></i>
+                                            <h3 class="box-title">Covered Entities</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="nav-tabs-custom">
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active"><a href="#tab_3-3" data-toggle="tab">Classes</a></li>
+                                                    <li><a href="#tab_4-4" data-toggle="tab">Properties</a></li>
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <div class="tab-pane active" id="tab_3-3">
+                                                        <!--<div class="row">
+                                                            <div class="col-xs-11">
+                                                                <div class="input-group">
+                                                                    <input type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+                                                                    <div class="input-group-btn">
+                                                                        <button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>-->
+                                                        <div class="row selectionDetails">
+                                                            <div class="col-xs-10">
+                                                                <div class="col-xs-3">
+                                                                    <div class="row">
+                                                                        <h4>Name</h4>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <h5 class="name">-</h5>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-3">
+                                                                    <div class="row">
+                                                                        <h4>Covered</h4>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <h5 class="covered">-</h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="TSCoverageGraph-container">
+                                                                    <div id="TSCoverageGraph"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane" id="tab_4-4">
+                                                        <!--<div class="row">
+                                                            <div class="col-xs-11">
+                                                                <div class="input-group">
+                                                                    <input type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+                                                                    <div class="input-group-btn">
+                                                                        <button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>-->
+                                                        <div class="row selectionDetailsProps">
+                                                            <div class="col-xs-10">
+                                                                <div class="col-xs-3">
+                                                                    <div class="row">
+                                                                        <h4>Name</h4>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <h5 class="name">-</h5>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-xs-3">
+                                                                    <div class="row">
+                                                                        <h4>Covered</h4>
+                                                                    </div>
+                                                                    <div class="row">
+                                                                        <h5 class="covered">-</h5>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xs-12">
+                                                                <div class="TSCoverageGraph-container">
+                                                                    <div id="TSCoverageGraphProperties"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Instance Page
+                ****************************************-->
+                <div id="instance" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Instance Representation
+                                <small></small>
+                            </h1>
+                        </section>
+                        <section class="content">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <i class="fa fa-info-circle"></i>
+                                            <h3 class="box-title">Search</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-xs-11">
+                                                    Search Instance: 
+                                                    <div class="input-group">
+                                                        <input id="instanceDirectSearch" type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+                                                        <div class="input-group-btn">
+                                                            <button id="instanceDirectSearchBTN" class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-xs-11">
+                                                    Search Instance of Class: 
+                                                    <div class="input-group">
+                                                        <input id="instanceSearch" type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+                                                        <div class="input-group-btn">
+                                                            <button id="instanceSearchBTN" class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    
+                                                </div>
+                                            </div>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="box">
+                                        <div class="box-header">
+                                            <i class="fa fa-share-alt"></i>
+                                            <h3 class="box-title">Instance Graph</h3>
+                                            <div class="box-tools pull-right">
+                                                <button class="btn btn-default btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            </div>
+                                        </div><!-- /.box-header -->
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <div class="col-xs-2">
+                                                        <div class="pull-right prevSelected"></div>
+                                                        <span class="pull-right">Previous Selected</span>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <div class="pull-right curSelected"></div>
+                                                        <span class="pull-right">Selected</span>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <div class="pull-right yellow_circle"></div>
+                                                        <span class="pull-right">Class</span>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <div class="pull-right grey_square"></div>
+                                                        <span class="pull-right">Instance</span>
+                                                    </div>
+                                                    <div class="col-xs-2">
+                                                        <div class=" pull-right green_square"></div>
+                                                        <span class="pull-right">Literal</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <div class="instanceGraph-container">
+                                                        <div id="instanceGraph"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><!-- /.box-body -->
+                                    </div><!-- /.box -->
+                                </div>
+                            </div>
+                        </section>
+                    </div><!-- /.content-wrapper -->
+                </div>
+
+                <!--************************************
+                *       Evolution Page
+                ****************************************-->
+                <div id="evolution" class="pt-page" >
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <h1>
+                                Tracking Changes Over Time
+                                <small></small>
+                            </h1>
+                        </section>
+
+
+                    </div><!-- /.content-wrapper -->
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                <strong>Copyright &copy; 2015 <a href="http://www.ics.forth.gr/" target="_blank">ICS - FORTH</a>.</strong> 
+                All rights reserved. | Developed by <strong> Anyfantis Nikos</strong>
+            </footer>
+        </div><!-- ./wrapper -->
+
+        <!-- TEMPLATE JAVASCRIPT LIBRARIES -->
+        <script src="app/plugins/jQuery/jQuery-2.1.4.min.js"></script> <!-- jQuery 2.1.4 -->
+        <script src="app/js/libs/jquery-ui.min.js"></script> <!-- jQuery UI 1.11.4 -->
+        <script> $.widget.bridge('uibutton', $.ui.button);</script><!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+        <script src="app/css/libs/bootstrap/js/bootstrap.min.js"></script> <!-- Bootstrap 3.3.5 -->
+        <script src="app/js/libs/raphael-min.js"></script> 
+        <script src="app/plugins/morris/morris.min.js"></script> <!-- Morris.js charts -->
+        <script src="app/plugins/sparkline/jquery.sparkline.min.js"></script> <!-- Sparkline -->
+        <script src="app/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script> <!-- jvectormap -->
+        <script src="app/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+        <script src="app/plugins/knob/jquery.knob.js"></script> <!-- jQuery Knob Chart -->
+        <script src="app/plugins/chartjs/Chart.min.js"></script> <!-- chartjs -->
+        <script src="app/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script> <!-- Bootstrap WYSIHTML5 -->
+        <script src="app/plugins/slimScroll/jquery.slimscroll.min.js"></script> <!-- Slimscroll -->
+        <script src="app/plugins/fastclick/fastclick.min.js"></script> <!-- FastClick -->
+        <script src="app/js/libs/template/app.min.js"></script>  <!-- AdminLTE App -->
+        <script src="app/js/libs/template/dashboard.js"></script> <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+        <script src="app/plugins/notify/bootstrap-notify.js"></script> <!-- notify bootstrap -->
+        <script src="app/plugins/notify/bootstrap-notify.min.js"></script> <!-- notify bootstrap -->
+
+        <!-- Visualization LIBRARIES -->
+        <script language="javascript" type="text/javascript" src="app/js/libs/modernizr.custom.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/pagetransitions.js"></script>
+        <!--JointJs-->
+        <script language="javascript" type="text/javascript" src="app/js/libs/joinjs/lodash.min.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/joinjs/backbone-min.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/joinjs/joint.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/joinjs/joint.layout.DirectedGraph.min.js"></script>
+        <!--D3js-->
+        <script language="javascript" type="text/javascript" src="app/js/libs/d3/d3.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/d3/d3.min.js"></script> 
+        <!-- Arbor.js -->
+        <script language="javascript" type="text/javascript" src="app/js/libs/arborjs/arbor.js" ></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/arborjs/graphics.js" ></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/arborjs/renderer.js" ></script>
+        <!-- Threejs IMPORTS-->
+        <script language="javascript" type="text/javascript" src="app/js/libs/three/three.min.js" ></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/three/DragControls.js" ></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/three/OrbitControls.js" ></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/three/Projector.js" ></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/three/stats.min.js" ></script>
+        <script language="javascript" type="text/javascript" src="app/js/libs/three/TransformControls.js" ></script>
+
+
+        <!-- MAZE JS -->
+        <script language="javascript" type="text/javascript" src="app/js/Controller.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/system/Helper.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/system/AjaxRequests.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/global.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/singleMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/source_schemaMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/target_schemaMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/errorsMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/source_percentageMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/target_percentageMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/ontology_overviewMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/x3ml_overviewMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/instanceMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/evolutionMain.js"></script>
+        <script language="javascript" type="text/javascript" src="app/js/pages/singleMapping/properties_pageMain.js"></script>
+    </body>
+</html>
