@@ -55,6 +55,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.w3c.dom.Document;
 
 
@@ -236,18 +237,23 @@ public class X3mlServices {
     
     
     @POST
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.TEXT_PLAIN})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("/target_schema/metrics/excludinglist/{mappid}")
-    public MetricsExcludingEntities excludinglistMetricsTS(ArrayList<String> excludeList, @PathParam("mappid") String id){
+    public MetricsExcludingEntities excludinglistMetricsTS(String jsonString, @PathParam("mappid") String id){
         try {
+            ArrayList<String> excludeList = new ArrayList<>();
+            JSONArray jsonArray = new JSONArray(jsonString);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                excludeList.add(jsonArray.getString(i));
+            }
+            
             excludeList = Utils.removeDublicatesFromArrayList(excludeList);
             for(String l : excludeList){
                 l = l.trim();
             }
-
-            X3ML x3ml = Utils.unmarshal_X3ML_WithID(id);
             
+            X3ML x3ml = Utils.unmarshal_X3ML_WithID(id);
             MetricsExcludingEntities_Generator generator = new MetricsExcludingEntities_Generator();
             return generator.targetSchemaMetrics(x3ml, id, excludeList);
         } catch (Exception ex) {
@@ -257,18 +263,23 @@ public class X3mlServices {
     }
     
     @POST
-    @Consumes({MediaType.APPLICATION_JSON,MediaType.APPLICATION_XML})
+    @Consumes({MediaType.TEXT_PLAIN})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("/source_schema/metrics/excludinglist/{mappid}")
-    public MetricsExcludingEntities excludinglistMetricsSS(ArrayList<String> excludeList, @PathParam("mappid") String id){
+    public MetricsExcludingEntities excludinglistMetricsSS(String jsonString, @PathParam("mappid") String id){
         try {
+            ArrayList<String> excludeList = new ArrayList<>();
+            JSONArray jsonArray = new JSONArray(jsonString);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                excludeList.add(jsonArray.getString(i));
+            }
+            
             excludeList = Utils.removeDublicatesFromArrayList(excludeList);
             for(String l : excludeList){
                 l = l.trim();
             }
             
             X3ML x3ml = Utils.unmarshal_X3ML_WithID(id);
-            
             MetricsExcludingEntities_Generator generator = new MetricsExcludingEntities_Generator();
             return generator.sourceSchemaMetrics(x3ml, id, excludeList);
         } catch (Exception ex) {

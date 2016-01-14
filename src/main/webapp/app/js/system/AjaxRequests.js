@@ -282,7 +282,7 @@ var AjaxRequests =
                     url: GlobalResources.Services.RestService + '/x3ml/target_schema/metrics/excludinglist/' + sessionStorage.MappingID,
                     type: 'POST',
                     dataType: 'json',
-                    contentType: 'application/json',
+                    contentType: 'text/plain',
                     data: JSON.stringify(list),
                     success: function (data) {
                         removeLoadingFlag(requestType);
@@ -310,7 +310,7 @@ var AjaxRequests =
                     url: GlobalResources.Services.RestService + '/x3ml/source_schema/metrics/excludinglist/' + sessionStorage.MappingID,
                     type: 'POST',
                     dataType: 'json',
-                    contentType: 'application/json',
+                    contentType: 'text/plain',
                     data: JSON.stringify(list),
                     success: function (data) {
                         removeLoadingFlag(requestType);
