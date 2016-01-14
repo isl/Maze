@@ -77,8 +77,22 @@ public class X3mlServices {
     public X3ML getSingleMapping(@PathParam("id") String id) {
         try {
             X3ML x3ml = Utils.unmarshal_X3ML_WithID(id);
-            x3ml = X3MLUtils.orderX3ML(x3ml);
+            //x3ml = X3MLUtils.orderX3ML(x3ml);
             return x3ml;
+        } catch (Exception ex) {
+           logger.error("Cannot retreive X3ML",ex);
+           return null; 
+        }
+    }
+    
+    @GET
+    @Path("/singlemapping/plain/{id}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Document getPlainSingleMapping(@PathParam("id") String id) {
+        try {
+            Document x3mlDoc = Utils.retreiveX3MLfile_toXML(id);
+            x3mlDoc = Utils.sortX3MLDoument(x3mlDoc);
+            return x3mlDoc;
         } catch (Exception ex) {
            logger.error("Cannot retreive X3ML",ex);
            return null; 

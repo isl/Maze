@@ -26,11 +26,7 @@ import gr.forth.ics.isl.maze.Utils.Utils;
 import gr.forth.ics.isl.maze.instance.TargetRecordsReasoner;
 import gr.forth.ics.isl.maze.mapping_rules.ERMappingRules_Generator;
 import gr.forth.ics.isl.maze.target_schema.TargetSchemaReasoner;
-import gr.forth.ics.isl.maze.x3ml.Entity;
-import gr.forth.ics.isl.maze.x3ml.Link;
-import gr.forth.ics.isl.maze.x3ml.Mapping;
 import gr.forth.ics.isl.maze.x3ml.X3ML;
-import java.util.List;
 import org.w3c.dom.Document;
 
 /**
@@ -45,7 +41,7 @@ public class DraftTests {
         //testReasoner();
         //testMappingRules_ER();
         //testTriangles();
-        testTargetRecordReasoner();
+        //testTargetRecordReasoner();
     }
     
     private static void testReasoner(){

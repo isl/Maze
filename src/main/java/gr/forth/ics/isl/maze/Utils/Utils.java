@@ -44,8 +44,19 @@ import gr.forth.ics.isl.maze.Resources;
 import java.io.Reader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
+import static java.util.Collections.list;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import javax.xml.xpath.*;
 import org.apache.log4j.Logger;
+import org.w3c.dom.*;
 
 /**
  * Provides helpers and functions for retrieving files from 3M service.
@@ -273,6 +284,128 @@ public class Utils {
         list.clear();
         list.addAll(hs);
         return list;
+    }
+    
+    /**
+     * Order an X3ML document in the XML form
+     * @param unsortedDoc Document
+     * @return Document sorted doc.
+     */
+    public static Document sortX3MLDoument(Document unsortedDoc){
+        try{
+
+            HashMap<Node, String> mappingsMap = new HashMap<>();
+            HashMap<Element, String> mappingsELEMMap = new HashMap<>();
+            
+            ArrayList<String> mappingSourceNodes = new ArrayList<>();
+            NodeList mappings = unsortedDoc.getElementsByTagName("mapping");
+            for (int i = 0; i < mappings.getLength(); i++) {
+                Node mapping = mappings.item(i);
+                
+                XPath xpath = XPathFactory.newInstance().newXPath();
+                XPathExpression expr = xpath.compile("./domain/source_node/text()");
+                
+                Object result = expr.evaluate(mapping, XPathConstants.NODESET);
+                NodeList nodes = (NodeList) result;
+                for (int j = 0; j < nodes.getLength(); j++) {
+                    mappingSourceNodes.add(nodes.item(j).getNodeValue());
+                    mappingsMap.put(mapping, nodes.item(j).getNodeValue());
+                }
+            }
+            
+            
+            for (Map.Entry<Node, String> entry : mappingsMap.entrySet()) {
+                Node linkNode = entry.getKey();
+                Element linkElem = (Element) linkNode;
+                String VALUE = entry.getValue();
+                
+                HashMap<Node, String> linksMap = new HashMap<>();
+                ArrayList<String> linkSourceNodes = new ArrayList<>();
+                Node domain = linkElem.getElementsByTagName("domain").item(0);
+                Element domainElem = (Element) domain;
+                
+                NodeList links = linkElem.getElementsByTagName("link");
+                for (int i = 0; i < links.getLength(); i++) {
+                    Node link = links.item(i);
+                    
+                    XPath xpath = XPathFactory.newInstance().newXPath();
+                    XPathExpression expr = xpath.compile("./path/source_relation/relation/text()");
+                    
+                    Object result = expr.evaluate(link, XPathConstants.NODESET);
+                    NodeList nodes = (NodeList) result;
+                    for (int j = 0; j < nodes.getLength(); j++) {
+                        linkSourceNodes.add(nodes.item(j).getNodeValue());
+                        linksMap.put(link, nodes.item(j).getNodeValue());
+                    }
+                }
+                
+                Collections.sort(linkSourceNodes, new Comparator<String>() {
+                    @Override
+                    public int compare(String s1, String s2) {
+                        return s1.compareToIgnoreCase(s2);
+                    }
+                });
+                
+                Element newMapping = unsortedDoc.createElement("mapping");
+                newMapping.appendChild(domainElem);
+                for (String sn : linkSourceNodes) {
+                    for (Map.Entry<Node, String> entryLink : linksMap.entrySet()) {
+                        Node key = entryLink.getKey();
+                        String value = entryLink.getValue();
+                        if (sn.equals(value)) {
+                            Element lElem = (Element) key;
+                            newMapping.appendChild(lElem);
+                        }
+                    }
+                }
+                
+                mappingsELEMMap.put(newMapping, VALUE);
+            }
+            
+            Collections.sort(mappingSourceNodes, new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    return s1.compareToIgnoreCase(s2);
+                }
+            });
+            
+            Element newMappigns = unsortedDoc.createElement("mappings");
+            for (String sn : mappingSourceNodes) {
+                for (Map.Entry<Element, String> entry : mappingsELEMMap.entrySet()) {
+                    Element key = entry.getKey();
+                    String value = entry.getValue();
+                    if (sn.equals(value)) {
+                        newMappigns.appendChild(key);
+                    }
+                }
+            }
+            
+            Element root = unsortedDoc.getDocumentElement();
+            Element oldMappigns = (Element)root.getElementsByTagName("mappings").item(0);
+            
+            root.replaceChild(newMappigns, oldMappigns);
+            
+            return unsortedDoc;
+        }
+        catch(Exception ex){
+            logger.fatal("Cannot order document of X3ML.", ex);
+            return unsortedDoc;
+        }
+    }
+    
+    public static void removeAllChildrenOfNode(Node node) 
+    {
+        for (int i = 0; i < node.getChildNodes().getLength(); i++) {
+            Node n = node.getChildNodes().item(i);
+        
+            if(n.hasChildNodes()) //edit to remove children of children
+            {
+              removeAllChildrenOfNode(n);
+              node.removeChild(n);
+            }
+            else
+              node.removeChild(n);
+        }
     }
     
     //Custom Class

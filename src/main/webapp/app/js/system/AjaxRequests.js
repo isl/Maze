@@ -424,7 +424,7 @@ var AjaxRequests =
                 createLoadingFlag(requestType);
                 var req1 = $.ajax({
                             type: 'GET',
-                            url: GlobalResources.Services.RestService + '/x3ml/singlemapping/' + id1,
+                            url: GlobalResources.Services.RestService + '/x3ml/singlemapping/plain/' + id1,
                             dataType: 'xml',
                             success: function (res1) {
                                 
@@ -436,7 +436,7 @@ var AjaxRequests =
                         });
 
                 var req2 = $.ajax({
-                            url: GlobalResources.Services.RestService + '/x3ml/singlemapping/' + id2,
+                            url: GlobalResources.Services.RestService + '/x3ml/singlemapping/plain/' + id2,
                             dataType: 'xml',
                             success: function (res2) {
                                 
