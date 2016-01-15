@@ -308,8 +308,8 @@ public class Utils {
                 Object result = expr.evaluate(mapping, XPathConstants.NODESET);
                 NodeList nodes = (NodeList) result;
                 for (int j = 0; j < nodes.getLength(); j++) {
-                    mappingSourceNodes.add(nodes.item(j).getNodeValue());
-                    mappingsMap.put(mapping, nodes.item(j).getNodeValue());
+                    mappingSourceNodes.add(nodes.item(j).getNodeValue() + i);
+                    mappingsMap.put(mapping, nodes.item(j).getNodeValue() + i);
                 }
             }
             
@@ -334,8 +334,8 @@ public class Utils {
                     Object result = expr.evaluate(link, XPathConstants.NODESET);
                     NodeList nodes = (NodeList) result;
                     for (int j = 0; j < nodes.getLength(); j++) {
-                        linkSourceNodes.add(nodes.item(j).getNodeValue());
-                        linksMap.put(link, nodes.item(j).getNodeValue());
+                        linkSourceNodes.add(nodes.item(j).getNodeValue() + i);
+                        linksMap.put(link, nodes.item(j).getNodeValue() + i);
                     }
                 }
                 
