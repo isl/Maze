@@ -17,7 +17,7 @@ This project is a Maven project, providing all the libs in **pom.xml**. You may 
 ***Client.*** You may configure ServerURL (hosted url), port, Maze’s Rest services URL (url which hosts Maze’s server) and target schema service of 3M.  
 Configuration file: [*Maze/src/main/webapp/app/js/Controller.js*]: 
 
-```javascript
+``` javascript
 
 var GlobalResources = {
     System :{
@@ -35,7 +35,7 @@ var GlobalResources = {
 ***Server.*** Also you may set services to retrieve sources (i.e. X3ML files). The following file illustrates the default configuration.  
 Configuration file: [*Maze/src/main/webapp/WEB-INF/config.properties*]:
 
-```properties
+``` properties
 
 # Maze Configuration file and Resources
 
