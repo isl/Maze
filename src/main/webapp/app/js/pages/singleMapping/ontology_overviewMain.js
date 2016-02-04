@@ -259,7 +259,7 @@ function createTextLabel(height, message, labelType) {
     //create font size and color parameters
     function createParameters(type){
         if (type === MappingType.SourceParent) {
-            return {fontsize: 30, fontface: "Arial", borderColor: {r: 0, g: 192, b: 239, a: 1.0}};
+            return {fontsize: 40, fontface: "Arial", borderColor: {r: 0, g: 192, b: 239, a: 1.0}};
         }
         else if (type === MappingType.SourceChild) {
             return {fontsize: 20, fontface: "Arial", borderColor: {r: 0, g: 192, b: 239, a: 1.0}};
@@ -362,6 +362,7 @@ function createConnectionOn3DObjects(source, target, size) {
     
     var color = 0x000000; //black
     if(source.typeObject === MappingType.SourceParent){
+        size = 10;
         color = source.currentHex;
     }
     

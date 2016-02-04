@@ -208,6 +208,13 @@ function DrawTargetGraph_Classes_CoveragePage(targetFile) {
     var coveredClasses = coveredElements.coveredClassesList === null ? [] :
             (coveredElements.coveredClassesList instanceof Array ? coveredElements.coveredClassesList :
             [coveredElements.coveredClassesList]); 
+    $.each(coveredClasses, function (i, c) {
+        if(c !== "" && c !== " "){
+            var cl = c.replace("noprefix", "");
+            $("#target_percentage .coveredClassesTextualList").append('<li>'+ cl +'</li>');
+        }
+    });
+    
     
     function isCoveredClass(uri){
         var covered = false;
@@ -677,6 +684,12 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
     var coveredProps = coveredElements.coveredPropertiesList === null ? [] :
             (coveredElements.coveredPropertiesList instanceof Array ? coveredElements.coveredPropertiesList :
             [coveredElements.coveredPropertiesList]); 
+    $.each(coveredProps, function (i, c) {
+        if(c !== ""){
+            var cl = c.replace("noprefix", "");
+            $("#target_percentage .coveredPropertiesTextualList").append('<li>'+ cl +'</li>');
+        }
+    });
     
     function isCoveredProperty(uri){
         var covered = false;

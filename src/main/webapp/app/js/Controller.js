@@ -10,7 +10,7 @@
 var GlobalResources = {
     System :{
         DebugMode : false,   //no connection with server at all (only for design purposes)
-        CacheMode : true    //NOT SUPPORTED YET get data if they are not cached already
+        CacheMode : true    //NOT SUPPORTED YET! get data if they are not cached already
     },
     Services : {
         ServerURL: 'http://'+window.location.hostname+'',

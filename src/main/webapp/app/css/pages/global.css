@@ -57,4 +57,7 @@ body .ui-autocomplete .ui-menu-item.ui-state-focus {
     body footer {
         display: none;
     }
+    body > div > header > nav > ul > li{
+        margin-left: 60px;
+    }
 }
