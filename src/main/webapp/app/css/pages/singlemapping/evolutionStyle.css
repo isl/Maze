@@ -1,0 +1,26 @@
+/**
+ * Author : Anyfantis Nikolaos 
+ * Email: nanifant 'at' ics 'dot' forth 'dot' gr
+ * © Copyright 2015 FOUNDATION FOR RESEARCH & TECHNOLOGY - HELLAS
+ */
+
+
+#noVersionsAlert{
+    display: none;
+}
+
+#evolution #xml_text1_evolution,
+#evolution #xml_text2_evolution
+{
+    display: none;
+}
+#evolution .multipleMappings .mapId_txtBox,
+#evolution .singleMapping .mapId_txtBox
+{
+   width: 70%;
+}
+
+#evolution .multipleMappings .addNewMapping {
+    margin-bottom: 10px;
+    width: 10%;
+}

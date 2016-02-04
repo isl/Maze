@@ -40,7 +40,7 @@ $(document).ready(function () {
     //  CLICK Events
     //****************************
     SSpaper.on('cell:pointerdown',function(cellView, evt, x, y) { 
-        console.log(cellView.model.id + ' table was clicked'); 
+        //console.log(cellView.model.id + ' table was clicked'); 
     });
     
     

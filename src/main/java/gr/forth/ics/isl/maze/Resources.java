@@ -19,8 +19,12 @@
 package gr.forth.ics.isl.maze;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Properties;
 
 /**
  * Contains all servers' resources.
@@ -31,15 +35,117 @@ public class Resources {
     /**
     * URL to retrieve X3ML from service
     */
-    public static final String Service_X3ML = "http://139.91.183.3/3MEditor/Services?method=export&output=text/xml&id=";
+    private static final String Service_X3ML = "http://139.91.183.3/3MEditor/Services?method=export&output=text/xml&id=";
     /**
     * URL to retrieve XML file from service
     */
-    public static final String Service_XML = "http://139.91.183.3/3MEditor/FetchBinFile?type=xml_link&file=";
+    private static final String Service_XML = "http://139.91.183.3/3MEditor/FetchBinFile?type=xml_link&file=";
     /**
     * URL to retrieve Target schema file from service
     */
-    public static final String Service_TargetSchema = "http://139.91.183.3/3MEditor/FetchBinFile?type=target_info&file=";
+    private static final String Service_TargetSchema = "http://139.91.183.3/3MEditor/FetchBinFile?type=target_info&file=";
+    /**
+    * URL to retrieve Versions of mapping
+    */
+    private static final String Service_GetVersions = "http://139.91.183.3/3M/ViewVersions?type=Mapping&action=getXML&id=Mapping";
+    /**
+    * URL to retrieve X3ML mapping from version collection
+    */
+    private static final String Service_VersionedX3ML = "http://139.91.183.3/3MEditor/Services?method=export&output=text/xml&id=";
+    
+    
+    
+    
+    
+    
+    
+    public static String getService_X3ML(){
+        String PROPERTY;
+        Properties prop = getConfigFile();
+        if(prop==null){
+            PROPERTY = Service_X3ML;
+        }
+        else{
+            PROPERTY = prop.getProperty("Service_X3ML");
+        }
+        return PROPERTY;
+    }
+    
+    public static String getService_XML(){
+        String PROPERTY;
+        Properties prop = getConfigFile();
+        if(prop==null){
+            PROPERTY = Service_XML;
+        }
+        else{
+            PROPERTY = prop.getProperty("Service_XML");
+        }
+        return PROPERTY;
+    }
+    
+    public static String getService_TargetSchema(){
+        String PROPERTY;
+        Properties prop = getConfigFile();
+        if(prop==null){
+            PROPERTY = Service_TargetSchema;
+        }
+        else{
+            PROPERTY = prop.getProperty("Service_TargetSchema");
+        }
+        return PROPERTY;
+    }
+    
+    public static String getService_GetVersions(){
+        String PROPERTY;
+        Properties prop = getConfigFile();
+        if(prop==null){
+            PROPERTY = Service_GetVersions;
+        }
+        else{
+            PROPERTY = prop.getProperty("Service_GetVersions");
+        }
+        return PROPERTY;
+    }
+    
+    public static String getService_VersionedX3ML(String mapID, String versionID){
+        String secondPart = "&version=";
+        
+        String PROPERTY;
+        Properties prop = getConfigFile();
+        if(prop==null){
+            PROPERTY = Service_VersionedX3ML;
+        }
+        else{
+            PROPERTY = prop.getProperty("Service_VersionedX3ML");
+        }
+        PROPERTY = PROPERTY + mapID + secondPart + versionID;
+        return PROPERTY;
+    }
+    
+    private static Properties getConfigFile(){
+        Properties prop = new Properties();
+        InputStream input = null;
+        try {
+                String propPath = findRelativePathFromRoot("/WEB-INF/");
+                input = new FileInputStream(propPath + "/config.properties");
+
+		// load a properties file
+		prop.load(input);
+	} catch (IOException ex) {
+            System.out.println("Cannot read config.properties file.");
+            return null;
+	} finally {
+		if (input != null) {
+			try {
+				input.close();
+			} catch (IOException e) {
+                            System.out.println("Cannot read config.properties file.");
+                            return null;
+			}
+		}
+	}
+        return prop;
+    }
     
     /**
     * This method is used to find relative path from root.

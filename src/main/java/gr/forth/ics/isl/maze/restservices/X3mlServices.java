@@ -41,6 +41,8 @@ import gr.forth.ics.isl.maze.source_schema.TreeGenerator;
 import gr.forth.ics.isl.maze.target_schema.TargetSchemaFile_Generator;
 import gr.forth.ics.isl.maze.target_schema.data.MappingTargetSchemata;
 import gr.forth.ics.isl.maze.target_schema.data.TargetSchemaFile;
+import gr.forth.ics.isl.maze.versions.Versions_Generator;
+import gr.forth.ics.isl.maze.versions.data.MappingVersions;
 import gr.forth.ics.isl.maze.x3ml.TargetInfo;
 import gr.forth.ics.isl.maze.x3ml.TargetSchema;
 import gr.forth.ics.isl.maze.x3ml.X3ML;
@@ -351,6 +353,35 @@ public class X3mlServices {
         } catch (Exception ex) {
             logger.error("Cannot generage graphical_comparison data for Mapping:" + id1 + ", " + id2, ex);
             return null;
+        }
+    }
+    
+    
+    @GET
+    @Path("/versions/{mappid}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public MappingVersions getMappingVersions(@PathParam("mappid") String id) {
+        try {
+            Versions_Generator versGen = new Versions_Generator(id);
+            return versGen.createVersions();
+        } catch (Exception ex) {
+           logger.error("Cannot get versions for Mapping:"+id,ex);
+           return null; 
+        }
+    }
+    
+    @GET
+    @Path("/versions/mapping/{mappid}/{versid}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Document getDirectMappingVersions(@PathParam("mappid") String id, 
+            @PathParam("versid") String versid) {
+        try {
+            Document document = Utils.retreiveVersionX3ML_from3M_toXML(id, versid);
+            document = Utils.sortX3MLDoument(document);
+            return document;
+        } catch (Exception ex) {
+           logger.error("Cannot get versioned X3ML for Mapping:"+id,ex);
+           return null; 
         }
     }
     

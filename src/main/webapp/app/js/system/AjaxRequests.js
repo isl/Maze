@@ -42,6 +42,7 @@ var AjaxRequests =
                         initOntologyOverviewPage();
                         initSourcePercentagePage();
                         initInstancePage();
+                        initEvolutionPage();
                     },
                     error: function (jqXHR, textStatus) {
                         console.log( "Request failed for mapping structure: " + textStatus );
@@ -88,12 +89,19 @@ var AjaxRequests =
                         if(data){
                             try{
                                 sessionStorage.ERSourceSchema=JSON.stringify(data);
-                                RenderSampleDataInfo_ER();
-                                DrawSourceSchemaGraph_ER();
                             }
                             catch (e){ 
                                 console.error("TOO big file for: " + requestType); 
                                 APPENDError('['+ requestType +'] TOO big file for cache', ERRORSPriority.High);
+                            }
+                            
+                            try{
+                                RenderSampleDataInfo_ER();
+                                DrawSourceSchemaGraph_ER();
+                            }
+                            catch (e){ 
+                                APPENDWarning('We could not visualize schema as ER.', WARNINGSPriority.Medium);
+                                DrawTreeD3();
                             }
                         }
                         else{
@@ -358,6 +366,86 @@ var AjaxRequests =
                         console.log( "Request failed for Instance data : " + textStatus );
                     }
                 });
+            },
+            GetVersionsofMapping:function()
+            {
+                var requestType = 'GetVersionsofMapping';
+                createLoadingFlag(requestType);
+                $.ajax({
+                    url: GlobalResources.Services.RestService + '/x3ml/versions/' + sessionStorage.MappingID,
+                    dataType: 'json',
+                    success: function (data) {
+                        removeLoadingFlag(requestType);
+                        if(data){
+                            sessionStorage.Versions=JSON.stringify(data);
+                            renderVersionsOfMapping(data);
+                        }
+                        else{
+                            NoVersionsAvailable();
+                            APPENDError('['+ requestType +'] No version data available', ERRORSPriority.High);
+                        }
+                    },
+                    error: function (jqXHR, textStatus) {
+                        removeLoadingFlag(requestType);
+                        NoVersionsAvailable();
+                        APPENDError('['+ requestType +'] No version data available', ERRORSPriority.High);
+                        console.log( "Request failed for Version data : " + textStatus );
+                    }
+                });
+            },
+            GetMappingsFromVersions:function(id1,id2)
+            {
+                var requestType = 'GetMappingsFromVersions';
+                createLoadingFlag(requestType);
+                
+                var url1 = GlobalResources.Services.RestService + '/x3ml/singlemapping/plain/' + id1;
+                var url2 = GlobalResources.Services.RestService + '/x3ml/singlemapping/plain/' + id2;
+                if (id1.toLowerCase().indexOf("version") >= 0){
+                    id1 = id1.replace("version", "");
+                    url1 = GlobalResources.Services.RestService + '/x3ml/versions/mapping/' + sessionStorage.MappingID + '/' + id1;
+                }
+                if (id2.toLowerCase().indexOf("version") >= 0){
+                    id2 = id2.replace("version", "");
+                    url2 = GlobalResources.Services.RestService + '/x3ml/versions/mapping/' + sessionStorage.MappingID + '/' + id2;
+                }
+                
+                var req1 = $.ajax({
+                            type: 'GET',
+                            url: url1,
+                            dataType: 'xml',
+                            success: function (res1) {
+                                
+                            },
+                            error: function (jqXHR, textStatus) {
+                                APPENDError('['+ requestType +'] Request failed for mapping, '+textStatus, ERRORSPriority.High);
+                                console.log( "Request failed for mapping structure: " + textStatus );
+                            }
+                        });
+
+                var req2 = $.ajax({
+                            url: url2,
+                            dataType: 'xml',
+                            success: function (res2) {
+                                
+                            },
+                            error: function (jqXHR, textStatus) {
+                                APPENDError('['+ requestType +'] Request failed for mapping, '+textStatus, ERRORSPriority.High);
+                                console.log( "Request failed for mapping structure: " + textStatus );
+                            }
+                        });
+		
+		$.when(req1, req2).done(function(res1,res2){
+                        removeLoadingFlag(requestType);
+                        
+                        var title1 = $(res1).find('title').text();
+                        var mapping1 = xmlToString(res1[0]);
+                        sessionStorage.EvolutionMapping1_XML = mapping1;
+                        var title2 = $(res2).find('title').text();
+                        var mapping2 = xmlToString(res2[0]);
+                        sessionStorage.EvolutionMapping2_XML = mapping2;
+                        
+                        textualComparisonVersions(title1,title2);
+		});
             }
         },
     

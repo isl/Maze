@@ -74,30 +74,36 @@ $(document).ready(function () {
 function ManageInstanceData(DATA){
     //console.log(DATA);
     
-    // save data
-    INSTANCEData = DATA;
-    
-    //add classes to search
-    var classList = DATA.classes === null ? [] : (DATA.classes instanceof Array ? DATA.classes : [DATA.classes]);
-    $.each(classList, function (i, c) {
-        InstanceDropDownSearchList.push(c.uri);
-    }); 
-    
-    //AUTOCOMPLETE text box
-    $('#instanceSearch').autocomplete({
-        source: InstanceDropDownSearchList
-    });
-    
-    //add instances to search
-    var instancesList = DATA.instances === null ? [] : (DATA.instances instanceof Array ? DATA.instances : [DATA.instances]);
-    $.each(instancesList, function (i, c) {
-        InstanceDirectDropDownSearchList.push(c.uri);
-    }); 
-    
-    //AUTOCOMPLETE text box
-    $('#instanceDirectSearch').autocomplete({
-        source: InstanceDirectDropDownSearchList
-    });
+    try{
+        // save data
+        INSTANCEData = DATA;
+
+        //add classes to search
+        var classList = DATA.classes === null ? [] : (DATA.classes instanceof Array ? DATA.classes : [DATA.classes]);
+        $.each(classList, function (i, c) {
+            InstanceDropDownSearchList.push(c.uri);
+        }); 
+
+        //AUTOCOMPLETE text box
+        $('#instanceSearch').autocomplete({
+            source: InstanceDropDownSearchList
+        });
+
+        //add instances to search
+        var instancesList = DATA.instances === null ? [] : (DATA.instances instanceof Array ? DATA.instances : [DATA.instances]);
+        $.each(instancesList, function (i, c) {
+            InstanceDirectDropDownSearchList.push(c.uri);
+        }); 
+
+        //AUTOCOMPLETE text box
+        $('#instanceDirectSearch').autocomplete({
+            source: InstanceDirectDropDownSearchList
+        });
+    }
+    catch (err){
+        $('#noInstancesAlert').show();
+        APPENDError('[Instances] No Instance data available yet!', ERRORSPriority.High);
+    }
 }
 
 function CreateGraphInstancePage(NODE, type){

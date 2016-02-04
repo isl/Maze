@@ -45,14 +45,9 @@ import java.io.Reader;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import static java.util.Collections.list;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import javax.xml.xpath.*;
 import org.apache.log4j.Logger;
@@ -72,7 +67,7 @@ public class Utils {
      */
     public static X3ML unmarshal_X3ML_WithID(String x3mlID) {
         try {
-            String uri = Resources.Service_X3ML + x3mlID;
+            String uri = Resources.getService_X3ML() + x3mlID;
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -108,7 +103,7 @@ public class Utils {
      */
     public static Document retreiveX3MLfile_toXML(String x3mlID){
         try {
-            String uri = Resources.Service_X3ML + x3mlID;
+            String uri = Resources.getService_X3ML() + x3mlID;
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -150,7 +145,7 @@ public class Utils {
      */
     public static Document retreiveFile_from3M_toXML(String filename){
         try {
-            String uri = Resources.Service_XML + URLEncoder.encode(filename, "UTF-8");
+            String uri = Resources.getService_XML() + URLEncoder.encode(filename, "UTF-8");
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -170,13 +165,66 @@ public class Utils {
     }
     
     /**
+     * Gets versions from 3M service.
+     * @param MappingId String mapping id
+     * @return Document Document(xml)
+     */
+    public static Document retreiveVersions_from3M_toXML(String MappingId){
+        try {
+            String uri = Resources.getService_GetVersions() + MappingId;
+            logger.info("Request for: " + uri);
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/xml");
+            InputStream xmlis = connection.getInputStream();
+            
+            Document doc = convert_InputStream_toXML(xmlis);
+            return doc;
+        } catch (IOException ex) {
+            logger.error("Cannot retreive versions file form 3M Service",ex);
+            return null;
+        } catch (SAXException | ParserConfigurationException ex) {
+            logger.error("Cannot convert Input Stream to Document for versions",ex);
+            return null;
+        }
+    }
+    
+    /**
+     * Gets versioned X3ML from 3M service.
+     * @param MappingId String mapping id
+     * @param VersionId String version id
+     * @return Document Document(xml)
+     */
+    public static Document retreiveVersionX3ML_from3M_toXML(String MappingId, String VersionId){
+        try {
+            String uri = Resources.getService_VersionedX3ML(MappingId, VersionId);
+            logger.info("Request for: " + uri);
+            URL url = new URL(uri);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/xml");
+            InputStream xmlis = connection.getInputStream();
+            
+            Document doc = convert_InputStream_toXML(xmlis);
+            return doc;
+        } catch (IOException ex) {
+            logger.error("Cannot retreive versioned X3ML form 3M Service",ex);
+            return null;
+        } catch (SAXException | ParserConfigurationException ex) {
+            logger.error("Cannot convert Input Stream to Document for versions",ex);
+            return null;
+        }
+    }
+    
+    /**
      * Gets target schema file and converts to Model from 3M service.
      * @param filename String file name
      * @return Model from constructor: ModelFactory.createDefaultModel().
      */
     public static Model retreiveOntology_from3M_toBaseOntModel(String filename){
         try {
-            String uri = Resources.Service_TargetSchema + URLEncoder.encode(filename, "UTF-8");
+            String uri = Resources.getService_TargetSchema() + URLEncoder.encode(filename, "UTF-8");
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -203,7 +251,7 @@ public class Utils {
      */
     public static Model retreiveTargetRecords_from3M_toBaseOntModel(String filename){
         try {
-            String uri = Resources.Service_XML + URLEncoder.encode(filename, "UTF-8");
+            String uri = Resources.getService_XML() + URLEncoder.encode(filename, "UTF-8");
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

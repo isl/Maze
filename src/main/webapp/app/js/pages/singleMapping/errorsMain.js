@@ -189,11 +189,5 @@ function evaluateMapping(mapping){
         APPENDError("[Instance] Mapping does not include data target record!", ERRORSPriority.High);
     }
     
-    //evaluate evolution
-    try{
-        APPENDError("[Evolution] Not supported yet!", ERRORSPriority.High);
-    }catch (er){
-        APPENDError("[Evolution] Not supported yet!", ERRORSPriority.High);
-    }
-    
+        
 }

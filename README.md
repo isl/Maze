@@ -1,28 +1,81 @@
 # Maze #
 
-Mapping Analyze (Maze) targets to manage and analyze mappings providing statistics, comparisons and visualization technics.
+### 1. Description ###
 
-### Installation ###
+Mapping Analyzer (Maze) constitutes a web-based tool that undertakes to provide complete management of mappings. Maze works as intermediary between expert users and X3ML language, providing analysis for converting and publishing content as linked data. This tool was implemented in the context of MSc thesis at the University of Crete, School of Sciences and Engineering, Computer Science Department and has been supported by the Foundation for Research and Technology – Hellas (FORTH), Institute of Computer Science (ICS).
+
+### 2. Installation ###
 
 3 Simple Steps: Build - Deploy - Run. 
 
-The folder src contains all the files needed to build the web app and create a war file. 
+The folder **src** contains all the files needed to build the web app and create a **war** file. 
 
-This project is a Maven project, providing all the libs in pom.xml. You may use any application server that supports war files.
+This project is a Maven project, providing all the libs in **pom.xml**. You may use any application server that supports war files (recommended: Apache Tomcat).
 
-### Usage ###
+### 3. Configuration ###
 
-You can use this project through Mapping Memory Manager:
+***Client.*** You may configure ServerURL (hosted url), port, Maze’s Rest services URL (url which hosts Maze’s server) and target schema service of 3M.  
+Configuration file: [*Maze/src/main/webapp/app/js/Controller.js*]: 
 
-1. Graph Tab (3M Editor - Mapping View) 
+```
+#!javascript
 
-2. Compare Mappings (Mapping Memory Manager -> More -> Compare)
+var GlobalResources = {
+    System :{
+        DebugMode : false   //no connection with server at all (only for design purposes)
+    },
+    Services : {
+        ServerURL: 'http://'+window.location.hostname+':8080', //hosted url
+        RestService: 'http://'+window.location.hostname+':8080/Maze/webresources', //Maze’s Rest services
+        TargetSchemaService:'http://139.91.183.3/3MEditor/FetchBinFile?type=target_info&file=' //target schema service of 3M
+    }
+};
+```
 
-### Contact ###
 
-Anyfantis Nikolaos < nanifant@ics.forth.gr >
+***Server.*** Also you may set services to retrieve sources (i.e. X3ML files). The following file illustrates the default configuration.  
+Configuration file: [*Maze/src/main/webapp/WEB-INF/config.properties*]:
 
-### License ###
+```
+#!properties
+
+# Maze Configuration file and Resources
+
+#URL to retrieve X3ML from 3M service
+Service_X3ML=http://139.91.183.3/3MEditor/Services?method=export&output=text/xml&id=
+
+#URL to retrieve XML file from 3M service
+Service_XML=http://139.91.183.3/3MEditor/FetchBinFile?type=xml_link&file=
+
+#URL to retrieve Target schema file from 3M service
+Service_TargetSchema=http://139.91.183.3/3MEditor/FetchBinFile?type=target_info&file=
+
+#URL to retrieve Versions of mapping
+Service_GetVersions=http://139.91.183.3/3M/ViewVersions?type=Mapping&action=getXML&id=Mapping
+
+#URL to retrieve X3ML mapping from version collection
+Service_VersionedX3ML=http://139.91.183.3/3MEditor/Services?method=export&output=text/xml&id=
+```
+
+
+### 4. Usage ###
+
+You can use this project through:
+
+1. Mapping Memory Manager (3M) – **More** option contains direct links to single mapping analysis (**Analysis**) or comparison of two mappings (**Compare**).  
+
+2. 3M Editor – You may view analysis of your mapping by using the **Analysis** tab and clicking the “*view Analysis*” link.  
+
+3. Home page – Finally, you may use directly the Home page providing the mapping IDs as parameters.
+
+
+### 5. Contact ###
+
+Anyfantis Nikolaos < nanifant@ics.forth.gr >  
+MSc Student of Computer Science Department,  
+University of Crete
+
+### 6. License ###
 
 Copyright 2015 Institute of Computer Science, Foundation for Research and Technology - Hellas
 
@@ -36,4 +89,4 @@ Contact: POBox 1385, Heraklio Crete, GR-700 13 GREECE Tel:+30-2810-391632 Fax: +
 
 Authors : Anyfantis Nikolaos
 
-This file is part of the Mapping Analyze (Maze) webapp.
+This file is part of the Mapping Analyzer (Maze) webapp.
