@@ -67,7 +67,7 @@ public class Utils {
      */
     public static X3ML unmarshal_X3ML_WithID(String x3mlID) {
         try {
-            String uri = Resources.getService_X3ML() + x3mlID;
+            String uri = Resources.getServiceURL_X3ML() + x3mlID;
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -103,7 +103,7 @@ public class Utils {
      */
     public static Document retreiveX3MLfile_toXML(String x3mlID){
         try {
-            String uri = Resources.getService_X3ML() + x3mlID;
+            String uri = Resources.getServiceURL_X3ML() + x3mlID;
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -143,9 +143,9 @@ public class Utils {
      * @param filename String file name
      * @return Document Document(xml)of X3ML
      */
-    public static Document retreiveFile_from3M_toXML(String filename){
+    public static Document retreiveSourceSchema_from3M_toXML(String filename){
         try {
-            String uri = Resources.getService_XML() + URLEncoder.encode(filename, "UTF-8");
+            String uri = Resources.getServiceURL_SourceSchema() + URLEncoder.encode(filename, "UTF-8");
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -171,7 +171,7 @@ public class Utils {
      */
     public static Document retreiveVersions_from3M_toXML(String MappingId){
         try {
-            String uri = Resources.getService_GetVersions() + MappingId;
+            String uri = Resources.getServiceURL_GetVersions() + MappingId;
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -198,7 +198,7 @@ public class Utils {
      */
     public static Document retreiveVersionX3ML_from3M_toXML(String MappingId, String VersionId){
         try {
-            String uri = Resources.getService_VersionedX3ML(MappingId, VersionId);
+            String uri = Resources.getServiceURL_VersionedX3ML(MappingId, VersionId);
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -224,7 +224,7 @@ public class Utils {
      */
     public static Model retreiveOntology_from3M_toBaseOntModel(String filename){
         try {
-            String uri = Resources.getService_TargetSchema() + URLEncoder.encode(filename, "UTF-8");
+            String uri = Resources.getServiceURL_TargetSchema() + URLEncoder.encode(filename, "UTF-8");
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -249,9 +249,9 @@ public class Utils {
      * @param filename String file name
      * @return Model from constructor: ModelFactory.createDefaultModel().
      */
-    public static Model retreiveTargetRecords_from3M_toBaseOntModel(String filename){
+    public static Model retreiveDataRecords_from3M_toBaseOntModel(String filename){
         try {
-            String uri = Resources.getService_XML() + URLEncoder.encode(filename, "UTF-8");
+            String uri = Resources.getServiceURL_DataRecords() + URLEncoder.encode(filename, "UTF-8");
             logger.info("Request for: " + uri);
             URL url = new URL(uri);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();

@@ -24,7 +24,6 @@ import gr.forth.ics.isl.maze.mapping_rules.data.RuleClass;
 import gr.forth.ics.isl.maze.mapping_rules.data.RuleConnection;
 import gr.forth.ics.isl.maze.mapping_rules.data.TreeBranchSourceSchema_MappingRule;
 import gr.forth.ics.isl.maze.mapping_rules.data.TreeSourceSchema_ComparisonMR;
-import gr.forth.ics.isl.maze.mapping_rules.data.TreeSourceSchema_MappingRules;
 import gr.forth.ics.isl.maze.x3ml.Entity;
 import gr.forth.ics.isl.maze.x3ml.Link;
 import gr.forth.ics.isl.maze.x3ml.Mapping;

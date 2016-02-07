@@ -28,7 +28,6 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -57,7 +56,7 @@ public class TargetRecordsReasoner {
         try{
             if(fileName == null) throw new NullPointerException();
             
-            Model curModel = Utils.retreiveTargetRecords_from3M_toBaseOntModel(fileName);
+            Model curModel = Utils.retreiveDataRecords_from3M_toBaseOntModel(fileName);
             initReasoner(curModel);
             logger.info("======== Finish Target Records initialization: "+ fileName);
         }

@@ -40,7 +40,7 @@ public class TreeGenerator {
         try {
             //this.domTree = new TreeMap<String, ArrayList<String>>();
             this.tree = new TreeSourceSchema();
-            this.xmlDoc = Utils.retreiveFile_from3M_toXML(filename);
+            this.xmlDoc = Utils.retreiveSourceSchema_from3M_toXML(filename);
             
             Node root = this.xmlDoc.getDocumentElement();
             String rootName = root.getNodeName();

@@ -58,7 +58,7 @@ public class DraftTests {
         //testMappingRules_ER();
         //testTriangles();
         //testTargetRecordReasoner();
-        testVersions();
+        //testVersions();
     }
     
     private static void testReasoner(){
@@ -105,7 +105,7 @@ public class DraftTests {
         
         X3ML x3ml = Utils.unmarshal_X3ML_WithID("434");
         String xmlName = x3ml.getInfo().getExampleDataInfo().getExampleDataSourceRecord().getXmlLink();
-        Document scDoc = Utils.retreiveFile_from3M_toXML(xmlName);
+        Document scDoc = Utils.retreiveSourceSchema_from3M_toXML(xmlName);
         ERMappingRules_Generator erRuleGen = new ERMappingRules_Generator();
         erRuleGen.createERMappingRules(x3ml, scDoc);
         

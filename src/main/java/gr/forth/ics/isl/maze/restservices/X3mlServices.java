@@ -122,7 +122,7 @@ public class X3mlServices {
         try {
             X3ML x3ml = Utils.unmarshal_X3ML_WithID(id);
             String xmlName = x3ml.getInfo().getExampleDataInfo().getExampleDataSourceRecord().getXmlLink();
-            Document scDoc = Utils.retreiveFile_from3M_toXML(xmlName);
+            Document scDoc = Utils.retreiveSourceSchema_from3M_toXML(xmlName);
             ERGenerator eg = new ERGenerator();
             return eg.createER(scDoc);
         } catch (Exception ex) {
@@ -176,7 +176,7 @@ public class X3mlServices {
         try {
             X3ML x3ml = Utils.unmarshal_X3ML_WithID(id);
             String xmlName = x3ml.getInfo().getExampleDataInfo().getExampleDataSourceRecord().getXmlLink();
-            Document scDoc = Utils.retreiveFile_from3M_toXML(xmlName);
+            Document scDoc = Utils.retreiveSourceSchema_from3M_toXML(xmlName);
             ERMappingRules_Generator erRuleGen = new ERMappingRules_Generator();
             return erRuleGen.createERMappingRules(x3ml, scDoc);
         } catch (Exception ex) {
@@ -192,7 +192,7 @@ public class X3mlServices {
         try {
             X3ML x3ml = Utils.unmarshal_X3ML_WithID(id);
             String xmlName = x3ml.getInfo().getExampleDataInfo().getExampleDataSourceRecord().getXmlLink();
-            Document scDoc = Utils.retreiveFile_from3M_toXML(xmlName);
+            Document scDoc = Utils.retreiveSourceSchema_from3M_toXML(xmlName);
             TreeMappingRules_Generator treeRuleGen = new TreeMappingRules_Generator();
             return treeRuleGen.createTreeMappingRules(x3ml, scDoc);
         } catch (Exception ex) {
@@ -313,9 +313,9 @@ public class X3mlServices {
             Instances results = new Instances();
             X3ML x3ml = Utils.unmarshal_X3ML_WithID(id);
             
-            String recordsFile = x3ml.getInfo().getExampleDataInfo().getExampleDataTargetRecord().getvalue();
+            String recordsFile = x3ml.getInfo().getExampleDataInfo().getExampleDataTargetRecord().getRdfLink();
             if(recordsFile==null || recordsFile.equals("")){
-                recordsFile = x3ml.getInfo().getExampleDataInfo().getExampleDataTargetRecord().getRdfLink();
+                recordsFile = x3ml.getInfo().getExampleDataInfo().getExampleDataTargetRecord().getvalue();
             }
             
             if(recordsFile!=null && !recordsFile.equals("")){
@@ -344,7 +344,7 @@ public class X3mlServices {
             if(xmlName1!=null && xmlName2!=null && !xmlName1.equals("") && !xmlName2.equals("")){
                 if(xmlName1.equals(xmlName2)){
                     String xmlName = x3ml1.getInfo().getExampleDataInfo().getExampleDataSourceRecord().getXmlLink();
-                    Document scDoc = Utils.retreiveFile_from3M_toXML(xmlName);
+                    Document scDoc = Utils.retreiveSourceSchema_from3M_toXML(xmlName);
                     ComparisonMappingRules_Generator generator = new ComparisonMappingRules_Generator();
                     return generator.createComparisonMappingRules(x3ml1, x3ml2, scDoc);
                 }
