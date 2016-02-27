@@ -808,7 +808,13 @@ function DRAW_MappingRule_TREE(INTERSECTED){
                         if(tObj){
                             //create connection between objects
                             var nestedConn = createConnectionOn3DObjects(targetObj, tObj, 5);
-                            var nestedLabel = createTextLabel(0, conn.property, MappingType.Property);
+                            var nestedLabel;
+                            if(targetObj.typeObject.indexOf("source_") > -1 || tObj.typeObject.indexOf("source_") > -1){
+                                nestedLabel = createTextLabel(0, "type", MappingType.Property);
+                            }
+                            else{
+                                nestedLabel = createTextLabel(0, conn.property, MappingType.Property);
+                            }
                             nestedConn.add(nestedLabel);
                             scene.add(nestedConn);
                             objectsToBeAdded.push(nestedConn);
@@ -822,6 +828,13 @@ function DRAW_MappingRule_TREE(INTERSECTED){
                 //create connection between objects
                 var connection = createConnectionOn3DObjects(INTERSECTED, targetObj, 5);
                 var label = createTextLabel(0, con.property, MappingType.Property);
+                var label;
+                if(INTERSECTED.typeObject.indexOf("source_") > -1 || targetObj.typeObject.indexOf("source_") > -1){
+                    label = createTextLabel(0, "type", MappingType.Property);
+                }
+                else{
+                    label = createTextLabel(0, con.property, MappingType.Property);
+                }
                 connection.add(label);
                 scene.add(connection);
                 objectsToBeAdded.push(connection);

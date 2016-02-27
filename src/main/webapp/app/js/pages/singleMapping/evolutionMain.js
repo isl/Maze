@@ -36,36 +36,43 @@ function NoVersionsAvailable(){
 
 
 function renderVersionsOfMapping(DATA){
-    
-    var versionsDate = [];
-    versionsDate.push(DATA.MappingTitle);
-    
-    var versData = DATA.Versions === null ? [] : (DATA.Versions instanceof Array ? DATA.Versions : [DATA.Versions]);
-    $.each(versData, function (i, v) {
-        versionsDate.push(v.VersionDate);
-    }); 
-    
-    var to = versionsDate.length-1;
-    
-    /* ION SLIDER */
-    $("#versionsRange").ionRangeSlider({
-        type: "double",
-        grid: true,
-        from: 0,
-        to: to,
-        values: versionsDate,
-        onUpdate: function (data) {
-            renderSelectedVersions(DATA, data);
-        },
-        onChange: function (data) {
-            renderSelectedVersions(DATA, data);
-        }
-    });
-    
-    setTimeout(function(){
-        var slider = $("#versionsRange").data("ionRangeSlider");
-        slider.update({from: 0, to: to});
-    }, 500);
+    try{
+        var versionsDate = [];
+        versionsDate.push(DATA.MappingTitle);
+
+        var versData = DATA.Versions === null ? [] : (DATA.Versions instanceof Array ? DATA.Versions : [DATA.Versions]);
+        $.each(versData, function (i, v) {
+            var ver = v.VersionDate;
+            if(ver){
+                versionsDate.push(ver);
+            }
+        }); 
+
+        var to = versionsDate.length-1;
+
+        /* ION SLIDER */
+        $("#versionsRange").ionRangeSlider({
+            type: "double",
+            grid: true,
+            from: 0,
+            to: to,
+            values: versionsDate,
+            onUpdate: function (data) {
+                renderSelectedVersions(DATA, data);
+            },
+            onChange: function (data) {
+                renderSelectedVersions(DATA, data);
+            }
+        });
+
+        setTimeout(function(){
+            var slider = $("#versionsRange").data("ionRangeSlider");
+            slider.update({from: 0, to: to});
+        }, 500);
+    }
+    catch (er){
+        NoVersionsAvailable();
+    }
 }
 
 function renderSelectedVersions(DATA, sliderData){

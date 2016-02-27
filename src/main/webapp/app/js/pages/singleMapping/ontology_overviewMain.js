@@ -876,7 +876,7 @@ function DRAW_MappingRule_ER(INTERSECTED){
         REMOVE_MappingRule(INTERSECTED);
         return false;
     }
-    console.log(INTERSECTED);
+    //console.log(INTERSECTED);
     
     var height = 200;
     if(INTERSECTED.typeObject === MappingType.Class)
@@ -939,7 +939,13 @@ function DRAW_MappingRule_ER(INTERSECTED){
                         if(tObj){
                             //create connection between objects
                             var nestedConn = createConnectionOn3DObjects(targetObj, tObj, 5);
-                            var nestedLabel = createTextLabel(0, conn.property, MappingType.Property);
+                            var nestedLabel;
+                            if(targetObj.typeObject.indexOf("source_") > -1 || tObj.typeObject.indexOf("source_") > -1){
+                                nestedLabel = createTextLabel(0, "type", MappingType.Property);
+                            }
+                            else{
+                                nestedLabel = createTextLabel(0, conn.property, MappingType.Property);
+                            }
                             nestedConn.add(nestedLabel);
                             scene.add(nestedConn);
                         }
@@ -950,7 +956,13 @@ function DRAW_MappingRule_ER(INTERSECTED){
 
                 //create connection between objects
                 var connection = createConnectionOn3DObjects(INTERSECTED, targetObj, 5);
-                var label = createTextLabel(0, con.property, MappingType.Property);
+                var label;
+                if(INTERSECTED.typeObject.indexOf("source_") > -1 || targetObj.typeObject.indexOf("source_") > -1){
+                    label = createTextLabel(0, "type", MappingType.Property);
+                }
+                else{
+                    label = createTextLabel(0, con.property, MappingType.Property);
+                }
                 connection.add(label);
                 scene.add(connection);
             });
@@ -971,7 +983,7 @@ function DRAW_MappingRule_TREE(INTERSECTED){
     }
     
     function generatePosition(){
-        
+        //TODO: create more effective layout
     }
 
     
@@ -1049,7 +1061,14 @@ function DRAW_MappingRule_TREE(INTERSECTED){
                         if(tObj){
                             //create connection between objects
                             var nestedConn = createConnectionOn3DObjects(targetObj, tObj, 5);
-                            var nestedLabel = createTextLabel(0, conn.property, MappingType.Property);
+                            var nestedLabel;
+                            if(targetObj.typeObject.indexOf("source_") > -1 || tObj.typeObject.indexOf("source_") > -1){
+                                nestedLabel = createTextLabel(0, "type", MappingType.Property);
+                            }
+                            else{
+                                nestedLabel = createTextLabel(0, conn.property, MappingType.Property);
+                            }
+                            //var nestedLabel = createTextLabel(0, conn.property, MappingType.Property);
                             nestedConn.add(nestedLabel);
                             scene.add(nestedConn);
                             addedObjectsToScene.push(nestedConn);
@@ -1062,7 +1081,14 @@ function DRAW_MappingRule_TREE(INTERSECTED){
 
                 //create connection between objects
                 var connection = createConnectionOn3DObjects(INTERSECTED, targetObj, 5);
-                var label = createTextLabel(0, con.property, MappingType.Property);
+                //var label = createTextLabel(0, con.property, MappingType.Property);
+                var label;
+                if(INTERSECTED.typeObject.indexOf("source_") > -1 || targetObj.typeObject.indexOf("source_") > -1){
+                    label = createTextLabel(0, "type", MappingType.Property);
+                }
+                else{
+                    label = createTextLabel(0, con.property, MappingType.Property);
+                }
                 connection.add(label);
                 scene.add(connection);
                 addedObjectsToScene.push(connection);

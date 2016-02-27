@@ -88,6 +88,23 @@ public class RuleClass {
         if(this.connections == null){
             this.connections = new ArrayList<>();
         }
-        this.connections.add(con);
+        if(!connectionExists(con)){
+            this.connections.add(con);
+        }
+    }
+    
+    private boolean connectionExists(RuleConnection connection){
+        try{
+            for(RuleConnection con : this.connections){
+                if(con.getProperty().equals(connection.getProperty()) 
+                        && con.getTarget().equals(connection.getTarget())){
+                    return true;
+                }
+            }
+            return false;
+        }
+        catch(Exception ex){
+            return false;
+        }
     }
 }
