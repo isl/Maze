@@ -61,7 +61,21 @@ public class Resources {
     
     
     
-    
+    public static boolean getIfHTTPS(){
+        boolean PROPERTY;
+        Properties prop = getConfigFile();
+        if(prop==null){
+            PROPERTY = false;
+        }
+        else{
+            try{
+                PROPERTY = Boolean.parseBoolean(prop.getProperty("Service_X3ML"));
+            } catch(Exception e){
+                return false;
+            }
+        }
+        return PROPERTY;
+    }
     
     public static String getServiceURL_X3ML(){
         String PROPERTY;

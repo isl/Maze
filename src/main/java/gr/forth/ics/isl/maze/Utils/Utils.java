@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashSet;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -68,12 +66,15 @@ public class Utils {
     public static X3ML unmarshal_X3ML_WithID(String x3mlID) {
         try {
             String uri = Resources.getServiceURL_X3ML() + x3mlID;
-            logger.info("Request for: " + uri);
-            URL url = new URL(uri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/xml");
-            InputStream inputStream = connection.getInputStream();
+            InputStream inputStream;
+            if(Resources.getIfHTTPS()){
+                HttpsClient https = new HttpsClient(uri);
+                inputStream = https.getInputStream();
+            }
+            else{
+                HttpClient http = new HttpClient(uri);
+                inputStream = http.getInputStream();
+            }
             Reader reader = new InputStreamReader(inputStream,"UTF-8");
             InputSource is = new InputSource(reader);
             is.setEncoding("UTF-8");
@@ -82,12 +83,8 @@ public class Utils {
             JAXBContext jc = JAXBContext.newInstance(X3ML.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             X3ML x3ml = (X3ML) unmarshaller.unmarshal(is);
-            connection.disconnect();
             return x3ml;
         } catch (JAXBException ex) {
-            logger.error("Cannot retreive X3ML file form Service",ex);
-            return null;
-        } catch (MalformedURLException ex) {
             logger.error("Cannot retreive X3ML file form Service",ex);
             return null;
         } catch (IOException ex) {
@@ -104,12 +101,15 @@ public class Utils {
     public static Document retreiveX3MLfile_toXML(String x3mlID){
         try {
             String uri = Resources.getServiceURL_X3ML() + x3mlID;
-            logger.info("Request for: " + uri);
-            URL url = new URL(uri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/xml");
-            InputStream inputStream = connection.getInputStream();
+            InputStream inputStream;
+            if(Resources.getIfHTTPS()){
+                HttpsClient https = new HttpsClient(uri);
+                inputStream = https.getInputStream();
+            }
+            else{
+                HttpClient http = new HttpClient(uri);
+                inputStream = http.getInputStream();
+            }
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             dbf.setValidating(false);
             dbf.setIgnoringComments(true);
@@ -124,7 +124,6 @@ public class Utils {
             is.setEncoding("UTF-8");
             
             Document x3ml = db.parse(is);
-            connection.disconnect();
             return x3ml;
         } catch (MalformedURLException ex) {
             logger.error("Cannot retreive X3ML file form Service",ex);
@@ -146,14 +145,17 @@ public class Utils {
     public static Document retreiveSourceSchema_from3M_toXML(String filename){
         try {
             String uri = Resources.getServiceURL_SourceSchema() + URLEncoder.encode(filename, "UTF-8");
-            logger.info("Request for: " + uri);
-            URL url = new URL(uri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/xml");
-            InputStream xmlis = connection.getInputStream();
+            InputStream inputStream;
+            if(Resources.getIfHTTPS()){
+                HttpsClient https = new HttpsClient(uri);
+                inputStream = https.getInputStream();
+            }
+            else{
+                HttpClient http = new HttpClient(uri);
+                inputStream = http.getInputStream();
+            }
             
-            Document doc = convert_InputStream_toXML(xmlis);
+            Document doc = convert_InputStream_toXML(inputStream);
             return doc;
         } catch (IOException ex) {
             logger.error("Cannot retreive file form 3M Service",ex);
@@ -172,14 +174,17 @@ public class Utils {
     public static Document retreiveVersions_from3M_toXML(String MappingId){
         try {
             String uri = Resources.getServiceURL_GetVersions() + MappingId;
-            logger.info("Request for: " + uri);
-            URL url = new URL(uri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/xml");
-            InputStream xmlis = connection.getInputStream();
+            InputStream inputStream;
+            if(Resources.getIfHTTPS()){
+                HttpsClient https = new HttpsClient(uri);
+                inputStream = https.getInputStream();
+            }
+            else{
+                HttpClient http = new HttpClient(uri);
+                inputStream = http.getInputStream();
+            }
             
-            Document doc = convert_InputStream_toXML(xmlis);
+            Document doc = convert_InputStream_toXML(inputStream);
             return doc;
         } catch (IOException ex) {
             logger.error("Cannot retreive versions file form 3M Service",ex);
@@ -199,14 +204,17 @@ public class Utils {
     public static Document retreiveVersionX3ML_from3M_toXML(String MappingId, String VersionId){
         try {
             String uri = Resources.getServiceURL_VersionedX3ML(MappingId, VersionId);
-            logger.info("Request for: " + uri);
-            URL url = new URL(uri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/xml");
-            InputStream xmlis = connection.getInputStream();
+            InputStream inputStream;
+            if(Resources.getIfHTTPS()){
+                HttpsClient https = new HttpsClient(uri);
+                inputStream = https.getInputStream();
+            }
+            else{
+                HttpClient http = new HttpClient(uri);
+                inputStream = http.getInputStream();
+            }
             
-            Document doc = convert_InputStream_toXML(xmlis);
+            Document doc = convert_InputStream_toXML(inputStream);
             return doc;
         } catch (IOException ex) {
             logger.error("Cannot retreive versioned X3ML form 3M Service",ex);
@@ -225,17 +233,18 @@ public class Utils {
     public static Model retreiveOntology_from3M_toBaseOntModel(String filename){
         try {
             String uri = Resources.getServiceURL_TargetSchema() + URLEncoder.encode(filename, "UTF-8");
-            logger.info("Request for: " + uri);
-            URL url = new URL(uri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/xml");
-            InputStream ins = connection.getInputStream();
+            InputStream inputStream;
+            if(Resources.getIfHTTPS()){
+                HttpsClient https = new HttpsClient(uri);
+                inputStream = https.getInputStream();
+            }
+            else{
+                HttpClient http = new HttpClient(uri);
+                inputStream = http.getInputStream();
+            }
             
             final Model base = ModelFactory.createDefaultModel();
-            base.read(ins, null);
-            
-            connection.disconnect();
+            base.read(inputStream, null);
             
             return base;
         } catch (Exception ex) {
@@ -252,17 +261,18 @@ public class Utils {
     public static Model retreiveDataRecords_from3M_toBaseOntModel(String filename){
         try {
             String uri = Resources.getServiceURL_DataRecords() + URLEncoder.encode(filename, "UTF-8");
-            logger.info("Request for: " + uri);
-            URL url = new URL(uri);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Accept", "application/xml");
-            InputStream ins = connection.getInputStream();
+            InputStream inputStream;
+            if(Resources.getIfHTTPS()){
+                HttpsClient https = new HttpsClient(uri);
+                inputStream = https.getInputStream();
+            }
+            else{
+                HttpClient http = new HttpClient(uri);
+                inputStream = http.getInputStream();
+            }
             
             final Model base = ModelFactory.createDefaultModel();
-            base.read(ins, null);
-            
-            connection.disconnect();
+            base.read(inputStream, null);
             
             return base;
         } catch (Exception ex) {

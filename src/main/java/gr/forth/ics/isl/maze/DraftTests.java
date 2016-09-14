@@ -22,6 +22,7 @@ import com.hp.hpl.jena.ontology.Individual;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.rdf.model.Property;
+import gr.forth.ics.isl.maze.Utils.HttpsClient;
 import gr.forth.ics.isl.maze.Utils.Utils;
 import gr.forth.ics.isl.maze.instance.TargetRecordsReasoner;
 import gr.forth.ics.isl.maze.mapping_rules.ERMappingRules_Generator;
@@ -30,7 +31,6 @@ import gr.forth.ics.isl.maze.x3ml.X3ML;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -45,6 +45,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import java.net.URL;
 /**
  *
  * @author Anyfantis Nikos (nanifant 'at' ics 'dot' forth 'dot' gr)
@@ -59,8 +60,16 @@ public class DraftTests {
         //testTriangles();
         //testTargetRecordReasoner();
         //testVersions();
+        //test_unmarshal_X3ML_WithID("103");
+        //testHttpsClient();
     }
     
+    private static void testHttpsClient(){
+        String url = "https://mapping-d-parthenos.d4science.org/3MEditor/Services?method=export&output=text/xml&id=103";
+        HttpsClient client = new HttpsClient(url);
+        client.testIt();
+    }
+        
     private static void testReasoner(){
         TargetSchemaReasoner reasoner = new TargetSchemaReasoner("CRMdig_v3.2.rdfs");
 
