@@ -139,7 +139,7 @@ public class HttpsClient {
             if(con!=null){
                 try {
                     InputStream is = con.getInputStream();
-                    con.disconnect();
+                    //con.disconnect();
                     return is;
                 } catch (IOException e) {
                     logger.error(e);

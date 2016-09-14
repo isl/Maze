@@ -46,7 +46,7 @@ public class HttpClient {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/xml");
             InputStream inputStream = connection.getInputStream();
-            connection.disconnect();
+            //connection.disconnect();
             return inputStream;
         } catch (MalformedURLException ex) {
             logger.error("Cannot retreive X3ML file form Service",ex);
