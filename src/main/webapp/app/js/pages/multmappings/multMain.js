@@ -39,9 +39,9 @@ function AreComparableMappings(mapping1, mapping2){
 function renderMappingDetailsHomePage(mapping1, mapping2){
     if(mapping1){
         var title = mapping1.info.title;
-        var source = mapping1.info.source_info.source_schema.$;
+        var source = mapping1.info.source.source_info.source_schema.$;
         if(source==='') source = 'Not Available';
-        var targetList = mapping1.info.target_info;
+        var targetList = mapping1.info.target.target_info;
         var target = '';
         try{
             $.each(targetList, function( index, schema ){
@@ -69,9 +69,9 @@ function renderMappingDetailsHomePage(mapping1, mapping2){
     }
     if(mapping2){
         var title = mapping2.info.title;
-        var source = mapping2.info.source_info.source_schema.$;
+        var source = mapping2.info.source.source_info.source_schema.$;
         if(source==='') source = 'Not Available';
-        var targetList = mapping2.info.target_info;
+        var targetList = mapping2.info.target.target_info;
         var target = '';
         try{
             $.each(targetList, function( index, schema ){

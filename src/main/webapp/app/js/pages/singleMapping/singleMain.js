@@ -21,13 +21,12 @@ $( document ).ready(function() {
 
 function RenderMappingDetails(){
     var mapping = $.parseJSON(sessionStorage.Mapping);
-    
     var title = mapping.info.title;
     
-    var source = mapping.info.source_info.source_schema.$;
+    var source = mapping.info.source.source_info.source_schema.$;
     if(source==='') source = 'Not Available';
     
-    var targetList = mapping.info.target_info;
+    var targetList = mapping.info.target.target_info;
     var target = '';
     try{
         $.each(targetList, function( index, schema ){

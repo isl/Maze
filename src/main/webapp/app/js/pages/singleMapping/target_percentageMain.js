@@ -5,7 +5,7 @@
  */
 var TargetSchemataPercentagePage;
 
-function initTargetPercentagePage(){
+function initTargetPercentagePage() {
     AjaxRequests.SingleMapping.GetCoveredElementsTargetSchema();
 }
 
@@ -18,38 +18,34 @@ $(document).ready(function () {
         var targetFile;
         if ($.isArray(TargetSchemataPercentagePage)) {
             targetFile = TargetSchemataPercentagePage[index];
-        }
-        else {
+        } else {
             targetFile = TargetSchemataPercentagePage;
         }
-        
+
         DrawMetricsToChart(targetFile);
-        
-        try{
-            setTimeout(function(){
+
+        try {
+            setTimeout(function () {
                 ManangeDrawGraphsCoveragePage();
             }, 500);
-        }
-        catch (er){
+        } catch (er) {
             APPENDError('[Target Coverage] Cannot find target file, ' + er, ERRORSPriority.High);
         }
     });
 });
 
-function addMetricsToTargetPercentagePage(DATA){
-    
+function addMetricsToTargetPercentagePage(DATA) {
+
     var metrics;
     var tsMetricsOverview;
-    
-    if(!DATA){
+
+    if (!DATA) {
         metrics = $.parseJSON(sessionStorage.CoverageMetrics);
         tsMetricsOverview = metrics.overviewMetrics.tSMetrics;
-    }
-    else{
+    } else {
         metrics = DATA.metrics;
         tsMetricsOverview = metrics.overviewMetrics.tSMetrics;
     }
-
     //target_percentage page
     $('#target_percentage .direct_metrics .covClasses').val(tsMetricsOverview.directMetric.CoveredClasses);
     $('#target_percentage .direct_metrics .covProps').val(tsMetricsOverview.directMetric.CoveredProperties);
@@ -59,29 +55,29 @@ function addMetricsToTargetPercentagePage(DATA){
     $('#target_percentage .leaves_metrics .covClasses').val(tsMetricsOverview.leavesMetric.CoveredClasses);
     $('#target_percentage .leaves_metrics .covProps').val(tsMetricsOverview.leavesMetric.CoveredProperties);
     $('#target_percentage .leaves_metrics .covTS').val(tsMetricsOverview.leavesMetric.CoveredTargetSchema);
-    
+
     /* jQueryKnob */
     $("#target_percentage .knob").trigger('change');
-    
+
     var targetSchemata = metrics.singleTSMetricsList;
     var tsList = targetSchemata === null ? [] : (targetSchemata instanceof Array ? targetSchemata : [targetSchemata]);
-    
+
     //save singleTSMetricsList to local var
     TargetSchemataPercentagePage = targetSchemata;
-    
+
     $('#target_percentage table.targetSchemataMetricsTable tr.tschema').remove();
-    $.each(tsList, function(i, metric) {
+    $.each(tsList, function (i, metric) {
         appendSingleTSMetric(i, metric);
     });
     $('#target_percentage table.targetSchemataMetricsTable tr.tschema').first().click();
 }
 
-function appendSingleTSMetric(count, schema){
+function appendSingleTSMetric(count, schema) {
     var version = schema.Version;
     var schemaFile = schema.FileName;
     var type = schema.Type;
     var name = schema.Name;
-    
+
     $('#target_percentage table.targetSchemataMetricsTable').append(
             '<tr index="' + count + '" class="tschema" file="' + schemaFile + '">\
                 <td>' + ++count + '</td>\
@@ -98,7 +94,7 @@ function DrawMetricsToChart(targetFile) {
     //-------------
     var directMetrics = targetFile.tSMetrics.directMetric;
     var leavesMetrics = targetFile.tSMetrics.leavesMetric;
-    
+
     var areaChartData = {
         labels: ["Covered Classes", "Covered Properties", "Average Coverage"],
         datasets: [
@@ -111,8 +107,8 @@ function DrawMetricsToChart(targetFile) {
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(220,220,220,1)",
                 data: [directMetrics.CoveredClasses,
-                        directMetrics.CoveredProperties,
-                        directMetrics.CoveredTargetSchema]
+                    directMetrics.CoveredProperties,
+                    directMetrics.CoveredTargetSchema]
             },
             {
                 label: "Leaves Metric",
@@ -123,17 +119,17 @@ function DrawMetricsToChart(targetFile) {
                 pointHighlightFill: "#fff",
                 pointHighlightStroke: "rgba(60,141,188,1)",
                 data: [leavesMetrics.CoveredClasses,
-                        leavesMetrics.CoveredProperties,
-                        leavesMetrics.CoveredTargetSchema]
+                    leavesMetrics.CoveredProperties,
+                    leavesMetrics.CoveredTargetSchema]
             }
         ]
     };
-    
+
     //remove previous chart and create it again
     $('#target_percentage .chart .barChart').remove();
     $('#target_percentage .chart').append('<canvas class="barChart" style="height:230px"></canvas>');
-    
-    
+
+
     var barChartCanvas = $("#target_percentage .chart .barChart").get(0).getContext("2d");
     var barChart = new Chart(barChartCanvas);
     var barChartData = areaChartData;
@@ -176,55 +172,57 @@ function DrawMetricsToChart(targetFile) {
 
 // GRAW GRAPHS
 //*********************
-function ManangeDrawGraphsCoveragePage(){
+function ManangeDrawGraphsCoveragePage() {
     var currentFile = $('#target_percentage table.targetSchemataMetricsTable tr.tschema.active').attr('file');
     var targetSchemata = $.parseJSON(sessionStorage.TargetSchemata);
-    
+
     var files = targetSchemata.TargetSchemaFile === null ? [] :
             (targetSchemata.TargetSchemaFile instanceof Array ? targetSchemata.TargetSchemaFile :
-            [targetSchemata.TargetSchemaFile]); 
-    
+                    [targetSchemata.TargetSchemaFile]);
+
     var curTS;
     $.each(files, function (i, f) {
-        if(f.FileName === currentFile) curTS = f; 
+        if (f.FileName === currentFile)
+            curTS = f;
     });
-    
-    if(curTS){
+
+    if (curTS) {
         DrawTargetGraph_Classes_CoveragePage(curTS);
         DrawTargetGraph_Properties_CoveragePage(curTS);
-    }
-    else{
+    } else {
         APPENDError('[Target Coverage] No target schema data for graph', ERRORSPriority.Medium);
     }
 }
 
 
 function DrawTargetGraph_Classes_CoveragePage(targetFile) {
-    
+
     //Empty graph
     $('#TSCoverageGraph > svg').remove();
-    
     var coveredElements = $.parseJSON(sessionStorage.CoveredElementsTargetSchema);
     var coveredClasses = coveredElements.coveredClassesList === null ? [] :
             (coveredElements.coveredClassesList instanceof Array ? coveredElements.coveredClassesList :
-            [coveredElements.coveredClassesList]); 
-	$("#target_percentage .coveredClassesTextualList li").remove();
+                    [coveredElements.coveredClassesList]);
+    $("#target_percentage .coveredClassesTextualList li").remove();
     $.each(coveredClasses, function (i, c) {
-        if(c !== "" && c !== " "){
+        if (c !== "" && c !== " ") {
             var cl = c.replace("noprefix", "");
-			$("#target_percentage .coveredClassesTextualList").append('<li>'+ cl +'</li>');
+            $("#target_percentage .coveredClassesTextualList").append('<li>' + cl + '</li>');
         }
     });
-    
-    
-    function isCoveredClass(uri){
+
+
+    function isCoveredClass(uri) {
         var covered = false;
+
         $.each(coveredClasses, function (i, c) {
-            if(c === uri) covered = true;
+            var tmp = c.split(":")[1];
+            if (tmp === uri.data.label)
+                covered = true;
         });
         return covered;
     }
-    
+
     function createClassNode(i, clas) {
         return {id: clas.uri, label: clas.label, data: clas, index: i};
     }
@@ -245,8 +243,9 @@ function DrawTargetGraph_Classes_CoveragePage(targetFile) {
     var classList = targetFile.classes === null ? [] : (targetFile.classes instanceof Array ? targetFile.classes : [targetFile.classes]);
     $.each(classList, function (i, c) {
         //if (c.label && c.label !== "")
-            graph.nodes.push(createClassNode(i, c));
+        graph.nodes.push(createClassNode(i, c));
     });
+
     //Find Subclasses
     $.each(classList, function (i, c) {
         if (c.subclasses) {
@@ -256,17 +255,17 @@ function DrawTargetGraph_Classes_CoveragePage(targetFile) {
             });
         }
     });
-    
-    
+
+
     // Some constants
     var WIDTH = 960,
-        HEIGHT = 600,
-        SHOW_THRESHOLD = 2;
-    
+            HEIGHT = 600,
+            SHOW_THRESHOLD = 2;
+
     // Declare the variables pointing to the node & link arrays
     var nodeArray = graph.nodes;
     var linkArray = graph.links;
-    
+
     // Variables keeping graph state
     var activeClass = undefined;
     var currentOffset = {x: 0, y: 0};
@@ -333,9 +332,9 @@ function DrawTargetGraph_Classes_CoveragePage(targetFile) {
      */
     function getClassInfo(n) {
         $('#target_percentage .selectionDetails .name').text(n.data.label);
-        
+
         var covered = 'Covered';
-        if(n.covered === false){
+        if (n.covered === false) {
             covered = 'Not Covered';
         }
         $('#target_percentage .selectionDetails .covered').text(covered);
@@ -404,15 +403,14 @@ function DrawTargetGraph_Classes_CoveragePage(targetFile) {
             .attr('class', function (d) {
                 var classes = 'node';
                 var cidoc = findClassfrom_CIDOC_CRM(d.id); //Helper.js
-                if(cidoc){
+                if (cidoc) {
                     classes = classes + " cidoc " + cidoc.color;
                 }
-                var isCovered = isCoveredClass(d.id);
+                var isCovered = isCoveredClass(d);
                 d.covered = isCovered;
-                if(isCovered === true){
+                if (isCovered === true) {
                     classes += " level1";
-                }
-                else{
+                } else {
                     classes += " level3";
                 }
                 return classes;// + ++level;
@@ -420,9 +418,12 @@ function DrawTargetGraph_Classes_CoveragePage(targetFile) {
             .attr('r', function (d) {
                 var size = parseFloat(d.data.size);
 //                console.log(size);
-                if(size < 6) {size = 6;}
-                else if(size>=6 && size<=10) {size+=2;}
-                else if( size > 15) size = 15;
+                if (size < 6) {
+                    size = 6;
+                } else if (size >= 6 && size <= 10) {
+                    size += 2;
+                } else if (size > 15)
+                    size = 15;
 //                size+=5;
                 return size;//node_size(d.data.size || 3);
             })
@@ -505,8 +506,8 @@ function DrawTargetGraph_Classes_CoveragePage(targetFile) {
         // activate all siblings
         try {
             var subClazzes = node.data.subclasses === null ? [] :
-                (node.data.subclasses instanceof Array ? node.data.subclasses :
-                [node.data.subclasses]);
+                    (node.data.subclasses instanceof Array ? node.data.subclasses :
+                            [node.data.subclasses]);
             Object(subClazzes).forEach(function (uri) {
                 var index = findIndex(uri, graph.nodes);
                 d3.select("#Cov_c" + index).classed('sibling', on);
@@ -558,8 +559,7 @@ function DrawTargetGraph_Classes_CoveragePage(targetFile) {
             if (mode != 'tick')
                 return;	// no zoom, no tick, we don't need to go further
             z = currentZoom;
-        }
-        else
+        } else
             currentZoom = z;
 
         // move edges
@@ -672,35 +672,38 @@ function DrawTargetGraph_Classes_CoveragePage(targetFile) {
         // Now highlight the graph node and show its class panel
         highlightGraphNodeCov(nodeArray[new_idx], true);
         getClassInfo(nodeArray[new_idx]);
-    };
+    }
+    ;
 
-    
+
 }
 
 function DrawTargetGraph_Properties_CoveragePage(targetFile) {
     //Empty graph
     $('#TSCoverageGraphProperties > svg').remove();
-    
+
     var coveredElements = $.parseJSON(sessionStorage.CoveredElementsTargetSchema);
     var coveredProps = coveredElements.coveredPropertiesList === null ? [] :
             (coveredElements.coveredPropertiesList instanceof Array ? coveredElements.coveredPropertiesList :
-            [coveredElements.coveredPropertiesList]); 
-	$("#target_percentage .coveredPropertiesTextualList li").remove();
+                    [coveredElements.coveredPropertiesList]);
+    $("#target_percentage .coveredPropertiesTextualList li").remove();
     $.each(coveredProps, function (i, c) {
-        if(c !== ""){
+        if (c !== "") {
             var cl = c.replace("noprefix", "");
-            $("#target_percentage .coveredPropertiesTextualList").append('<li>'+ cl +'</li>');
+            $("#target_percentage .coveredPropertiesTextualList").append('<li>' + cl + '</li>');
         }
     });
-    
-    function isCoveredProperty(uri){
+
+    function isCoveredProperty(uri) {
         var covered = false;
         $.each(coveredProps, function (i, c) {
-            if(c === uri) covered = true;
+            var tmp = c.split(":")[1];
+            if (tmp === uri.data.label)
+                covered = true;
         });
         return covered;
     }
-    
+
     function createClassNode(i, clas) {
         return {id: clas.uri, label: clas.label, data: clas, index: i};
     }
@@ -721,7 +724,7 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
     var propertiesList = targetFile.properties === null ? [] : (targetFile.properties instanceof Array ? targetFile.properties : [targetFile.properties]);
     $.each(propertiesList, function (i, c) {
         //if (c.label && c.label !== "")
-            graph.nodes.push(createClassNode(i, c));
+        graph.nodes.push(createClassNode(i, c));
     });
     //Find Subclasses
     $.each(propertiesList, function (i, c) {
@@ -732,17 +735,17 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
             });
         }
     });
-    
-    
+
+
     // Some constants
     var WIDTH = 960,
-        HEIGHT = 600,
-        SHOW_THRESHOLD = 2;
-    
+            HEIGHT = 600,
+            SHOW_THRESHOLD = 2;
+
     // Declare the variables pointing to the node & link arrays
     var nodeArray = graph.nodes;
     var linkArray = graph.links;
-    
+
     // Variables keeping graph state
     var activeClass = undefined;
     var currentOffset = {x: 0, y: 0};
@@ -809,9 +812,9 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
      */
     function getClassInfo(n) {
         $('#target_percentage .selectionDetailsProps .name').text(n.data.label);
-        
+
         var covered = 'Covered';
-        if(n.covered === false){
+        if (n.covered === false) {
             covered = 'Not Covered';
         }
         $('#target_percentage .selectionDetailsProps .covered').text(covered);
@@ -879,12 +882,11 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
             })
             .attr('class', function (d) {
                 var classes = 'node ';
-                var isCovered = isCoveredProperty(d.id);
+                var isCovered = isCoveredProperty(d);
                 d.covered = isCovered;
-                if(isCovered === true){
+                if (isCovered === true) {
                     classes += "level1";
-                }
-                else{
+                } else {
                     classes += "level3";
                 }
                 return classes;
@@ -949,7 +951,7 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
      - on: true/false to show/hide the node
      */
     function highlightGraphNodePropsCov(node, on) {
-        
+
         //if( d3.event.shiftKey ) on = false; // for debugging
 
         // If we are to activate a class, and there's already one active,
@@ -973,8 +975,8 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
         // activate all siblings
         try {
             var subClazzes = node.data.subproperties === null ? [] :
-                (node.data.subproperties instanceof Array ? node.data.subproperties :
-                [node.data.subproperties]);
+                    (node.data.subproperties instanceof Array ? node.data.subproperties :
+                            [node.data.subproperties]);
             Object(subClazzes).forEach(function (uri) {
                 var index = findIndex(uri, graph.nodes);
                 d3.select("#PropsCov_c" + index).classed('sibling', on);
@@ -1026,8 +1028,7 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
             if (mode != 'tick')
                 return;	// no zoom, no tick, we don't need to go further
             z = currentZoom;
-        }
-        else
+        } else
             currentZoom = z;
 
         // move edges
@@ -1104,7 +1105,7 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
         repositionGraph(newOffset, newZoom, "zoom");
     }
 
-    
+
     /* --------------------------------------------------------------------- */
 
     /* process events from the force-directed graph */
@@ -1139,8 +1140,9 @@ function DrawTargetGraph_Properties_CoveragePage(targetFile) {
         // Now highlight the graph node and show its class panel
         highlightGraphNodePropsCov(nodeArray[new_idx], true);
         getClassInfo(nodeArray[new_idx]);
-    };
+    }
+    ;
 
-    
+
 }
 

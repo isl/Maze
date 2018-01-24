@@ -34,7 +34,6 @@ import org.apache.log4j.Logger;
  *
  * @author Anyfantis Nikos (nanifant 'at' ics 'dot' forth 'dot' gr)
  */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "CoveredClasses",
@@ -43,6 +42,7 @@ import org.apache.log4j.Logger;
 })
 @XmlRootElement(name = "TSDirectMetric")
 public class TSDirectMetric {
+
     private static Logger logger = Logger.getLogger(TSDirectMetric.class);
     private double CoveredClasses;
     private double CoveredProperties;
@@ -79,87 +79,101 @@ public class TSDirectMetric {
     public void setCoveredTargetSchema(double CoveredTargetSchema) {
         this.CoveredTargetSchema = CoveredTargetSchema;
     }
-    
+
     public void RUN_METRIC(
             TargetSchemaReasoner reasoner,
             HashMap<String, String> x3mlClasses,
             HashMap<String, String> x3mlProp,
             ArrayList<String> excludeList) {
-        
-        try{
+
+        try {
             //Count Classes
             ArrayList<OntClass> targetClasses = reasoner.getModelClassesList(Boolean.FALSE);
             int classCounter = 0;
-            for(OntClass c : targetClasses){
+            for (OntClass c : targetClasses) {
                 String c_uri = c.getURI();
-                String c_label = c_uri.replace(c.getNameSpace(), "").trim();
-                
-                boolean covered = false;
-                for (Map.Entry<String, String> entry : x3mlClasses.entrySet()) {
-                    String key = entry.getKey().trim(); //x3mlClasses label
-                    if(c_label.equals(key)){
-                        covered = true;
-                        break;
+                if (c_uri != null) {
+
+                    String c_label = c_uri.replace(c.getNameSpace(), "").trim();
+                    //System.out.println("c_label  " + c_label);
+
+                    if (c_label.contains(":")) {
+                        c_label = c_label.split(":")[1];
                     }
-                }
-                
-                boolean exclude = false;
-                if(excludeList != null){
-                    for(String excl : excludeList){
-                        if(excl.equals(c_uri)){
-                            exclude = true;
+
+                    boolean covered = false;
+                    for (Map.Entry<String, String> entry : x3mlClasses.entrySet()) {
+                        String key = entry.getKey().trim(); //x3mlClasses label
+                        if (key.contains(":")) {
+                            key = key.split(":")[1];
+                        }
+                        if (c_label.equals(key)) {
+                            covered = true;
                             break;
                         }
                     }
-                }
-                
-                if(covered || exclude){
-                    classCounter++;
+
+                    boolean exclude = false;
+                    if (excludeList != null) {
+                        for (String excl : excludeList) {
+                            if (excl.equals(c_uri)) {
+                                exclude = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (covered || exclude) {
+                        classCounter++;
+                    }
                 }
             }
-            double coveredClasses = (double)classCounter;
-            double totalClasses = (double)targetClasses.size();
-            
+            double coveredClasses = (double) classCounter;
+            double totalClasses = (double) targetClasses.size();
             //Count Properties
             ArrayList<OntProperty> targetProps = reasoner.getModelPropList();
             int propCounter = 0;
-            for(OntProperty p : targetProps){
+            for (OntProperty p : targetProps) {
                 String p_uri = p.getURI();
                 String p_label = p_uri.replace(p.getNameSpace(), "").trim();
-                
+                if (p_label.contains(":")) {
+                    p_label = p_label.split(":")[1];
+                }
                 boolean covered = false;
                 for (Map.Entry<String, String> entry : x3mlProp.entrySet()) {
                     String key = entry.getKey().trim(); //x3mlProperties label
-                    if(p_label.equals(key)){
+                    if (key.contains(":")) {
+                        key = key.split(":")[1];
+                    }
+                    if (p_label.equals(key)) {
                         covered = true;
                         break;
                     }
                 }
-                
+
                 boolean exclude = false;
-                if(excludeList != null){
-                    for(String excl : excludeList){
-                        if(excl.equals(p_uri)){
+                if (excludeList != null) {
+                    for (String excl : excludeList) {
+                        if (excl.equals(p_uri)) {
                             exclude = true;
                             break;
                         }
                     }
                 }
-                
-                if(covered || exclude){
+
+                if (covered || exclude) {
                     propCounter++;
                 }
             }
-            double coveredProps = (double)propCounter;
-            double totalProps = (double)targetProps.size();
-            
+            double coveredProps = (double) propCounter;
+            double totalProps = (double) targetProps.size();
+
             //Create percentages
-            double tsPercentage = ((coveredClasses+coveredProps) / (totalClasses+totalProps)) * 100;
+            double tsPercentage = ((coveredClasses + coveredProps) / (totalClasses + totalProps)) * 100;
             this.CoveredClasses = Math.round((coveredClasses / totalClasses) * 100);
             this.CoveredProperties = Math.round((coveredProps / totalProps) * 100);
             this.CoveredTargetSchema = Math.round(tsPercentage);
-        }
-        catch(NullPointerException ex){
+        } catch (NullPointerException ex) {
             logger.error("Problem on running Target Schema Direct Metric!", ex);
             this.CoveredClasses = 0;
             this.CoveredProperties = 0;

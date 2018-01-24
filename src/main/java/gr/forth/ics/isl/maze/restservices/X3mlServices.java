@@ -153,7 +153,7 @@ public class X3mlServices {
         try {
             X3ML x3ml = Utils.unmarshal_X3ML_WithID(id);
             MappingTargetSchemata mts = new MappingTargetSchemata();
-            for(TargetInfo ti: x3ml.getInfo().getTargetInfo()){
+            for(TargetInfo ti: x3ml.getInfo().getTarget().getTargetInfo()){
                 String schemaFile = ti.getTargetSchema().getSchemaFile();
                 TargetSchema ts = ti.getTargetSchema();
                 if(schemaFile!=null){
@@ -315,7 +315,7 @@ public class X3mlServices {
             
             String recordsFile = x3ml.getInfo().getExampleDataInfo().getExampleDataTargetRecord().getRdfLink();
             if(recordsFile==null || recordsFile.equals("")){
-                recordsFile = x3ml.getInfo().getExampleDataInfo().getExampleDataTargetRecord().getvalue();
+                recordsFile = x3ml.getInfo().getExampleDataInfo().getExampleDataTargetRecord().getValue();
             }
             
             if(recordsFile!=null && !recordsFile.equals("")){

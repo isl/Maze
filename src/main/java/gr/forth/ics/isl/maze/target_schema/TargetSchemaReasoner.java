@@ -44,7 +44,9 @@ import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import gr.forth.ics.isl.maze.Utils.SparQLQueries;
 import gr.forth.ics.isl.maze.target_schema.data.Triangle;
-
+import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 /**
  *
@@ -59,38 +61,37 @@ public class TargetSchemaReasoner {
     private ArrayList<OntClass> baseModelClassesList;
     private ArrayList<OntClass> fullModelClassesList;
     private ArrayList<OntProperty> baseModelPropList;
-    
+
     //  Constructors
     //**************
-    public TargetSchemaReasoner(String fileName){
-        try{
-            if(fileName == null) throw new NullPointerException();
-            
+    public TargetSchemaReasoner(String fileName) {
+        try {
+            if (fileName == null) {
+                throw new NullPointerException();
+            }
+
             Model curModel = Utils.retreiveOntology_from3M_toBaseOntModel(fileName);
             initReasoner(curModel);
-            logger.info("======== Finish Model initialization: "+ fileName);
-        }
-        catch(Exception ex){
-            logger.error("Cannot InitModel: "+fileName, ex);
+            logger.info("======== Finish Model initialization: " + fileName);
+        } catch (Exception ex) {
+            logger.error("Cannot InitModel: " + fileName, ex);
         }
     }
-    
-    public TargetSchemaReasoner(Model curModel){
+
+    public TargetSchemaReasoner(Model curModel) {
         //disableLogging();
-        try{
-            if(curModel == null) throw new NullPointerException();
-            
+        try {
+            if (curModel == null) {
+                throw new NullPointerException();
+            }
+
             initReasoner(curModel);
             logger.info("======== Finish Model initializationfrom Model");
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             logger.error("Cannot InitModel from model", ex);
         }
     }
-    
-    
-    
-    
+
     //  Setters and Getters
     //*************************
     public Model getBase() {
@@ -100,12 +101,11 @@ public class TargetSchemaReasoner {
     public void setBase(Model curModel) {
         initReasoner(curModel);
     }
-    
+
     public ArrayList<OntClass> getModelClassesList(Boolean inference) {
-        if(inference){
+        if (inference) {
             return this.fullModelClassesList;
-        }
-        else{
+        } else {
             return this.baseModelClassesList;
         }
     }
@@ -113,106 +113,102 @@ public class TargetSchemaReasoner {
     public ArrayList<OntProperty> getModelPropList() {
         return this.baseModelPropList;
     }
-    
-    
+
     //  UTILS 
     //*************************
-    public ArrayList<String> getSubclassesOfClass(OntClass c, Boolean inference){
+    public ArrayList<String> getSubclassesOfClass(OntClass c, Boolean inference) {
         OntModel curModel;
-        if(inference){
+        if (inference) {
             curModel = this.fullModel;
-        }
-        else{
+        } else {
             curModel = this.baseModel;
         }
-        
-        ArrayList<String> resultsList = new ArrayList<>(); 
-        try{
+
+        ArrayList<String> resultsList = new ArrayList<>();
+        try {
             ResIterator iterator = curModel.listSubjectsWithProperty(new PropertyImpl("http://www.w3.org/2000/01/rdf-schema#subClassOf"), c);
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String uri = iterator.next().toString();
-                if(!uri.equals(c.getURI()))  resultsList.add(uri);
+                if (!uri.equals(c.getURI())) {
+                    resultsList.add(uri);
+                }
             }
-        }
-        catch(NullPointerException ex){
+        } catch (NullPointerException ex) {
             logger.error("Null Class when getting subClasses of Class", ex);
         }
         return resultsList;
     }
-    
-    public ArrayList<String> getSubpropertiesOfProperty(OntProperty p, Boolean inference){
+
+    public ArrayList<String> getSubpropertiesOfProperty(OntProperty p, Boolean inference) {
         OntModel curModel;
-        if(inference){
+        if (inference) {
             curModel = this.fullModel;
-        }
-        else{
+        } else {
             curModel = this.baseModel;
         }
-        
-        ArrayList<String> resultsList = new ArrayList<>(); 
-        try{
+
+        ArrayList<String> resultsList = new ArrayList<>();
+        try {
             ResIterator iterator = curModel.listSubjectsWithProperty(new PropertyImpl("http://www.w3.org/2000/01/rdf-schema#subPropertyOf"), p);
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 String uri = iterator.next().toString();
                 resultsList.add(uri);
             }
-        }
-        catch(NullPointerException ex){
+        } catch (NullPointerException ex) {
             logger.error("Null Property when getting subProperties of Property", ex);
         }
         return resultsList;
     }
-    
-    public ArrayList<String> getRangeOfProperty(OntProperty p){
-        ArrayList<String> resultsList = new ArrayList<>(); 
-        try{
+
+    public ArrayList<String> getRangeOfProperty(OntProperty p) {
+        ArrayList<String> resultsList = new ArrayList<>();
+        try {
             ExtendedIterator iter = p.listRange();
-            while (iter.hasNext() ) { 
+            while (iter.hasNext()) {
                 resultsList.add(iter.next().toString());
             }
-            
+
             /*for(String kati:resultsList){
                 //System.out.println("listRange: "+kati);
             }*/
-        }
-        catch(NullPointerException ex){
+        } catch (NullPointerException ex) {
             logger.error("Null Property when getting range", ex);
         }
         return resultsList;
     }
-    
-    public ArrayList<String> getDomainOfProperty(OntProperty p){
-        ArrayList<String> resultsList = new ArrayList<>(); 
-        try{
+
+    public ArrayList<String> getDomainOfProperty(OntProperty p) {
+        ArrayList<String> resultsList = new ArrayList<>();
+        try {
             ExtendedIterator iter = p.listDomain();
-            while (iter.hasNext() ) { 
+            while (iter.hasNext()) {
                 resultsList.add(iter.next().toString());
             }
-            
+
             /*for(String kati:resultsList){
                 //System.out.println("listDomain: "+kati);
             }*/
-        }
-        catch(NullPointerException ex){
+        } catch (NullPointerException ex) {
             logger.error("Null Property when getting domain", ex);
         }
         return resultsList;
     }
-    
+
     /**
-     * Search for triangles for specific class A. 
-     * A triangle is A->B->C AND C->A.
-     * @param clazz OntClass 
+     * Search for triangles for specific class A. A triangle is A->B->C AND
+     * C->A.
+     *
+     * @param clazz OntClass
      * @return list of triangles
      */
-    public ArrayList<Triangle> searchForTriangles(OntClass clazz){
-        try{
+    public ArrayList<Triangle> searchForTriangles(OntClass clazz) {
+        try {
             ArrayList<Triangle> trianglesList = new ArrayList<>();
             Query query = QueryFactory.create(SparQLQueries.GetTrianglesOfClass(clazz));
             QueryExecution qe = QueryExecutionFactory.create(query, this.baseModel);
             ResultSet resultset = qe.execSelect();
-            
-            while (resultset.hasNext()) { 
+
+            while (resultset.hasNext()) {
                 final QuerySolution qs = resultset.next();
                 Triangle triangle = new Triangle();
                 triangle.setAB(qs.get("AB").toString());
@@ -225,25 +221,29 @@ public class TargetSchemaReasoner {
             //ResultSetFormatter.out(System.out, resultset, query);
             qe.close();
             return trianglesList;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             logger.error("Cannot find triangles of Class: " + clazz.getURI(), ex);
             return new ArrayList<>();
         }
     }
-    
-    
+
     //  Private Functions 
     //*************************
-    private void initReasoner(Model model){
+    private void initReasoner(Model model) {
         //disableLogging();
         this.base = model;
-        this.baseModel = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM, this.base );
+        StmtIterator listStatements = model.listStatements(null, RDF.type, RDFS.Class);
+        if (listStatements.toList().size() > 0) {
+            this.baseModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM, this.base);
+            this.fullModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF, this.base);
+        } else {
+            this.baseModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, this.base);
+            this.fullModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_TRANS_INF, this.base);
+        }
         this.baseModel.setDerivationLogging(false);
         this.baseModel.setDynamicImports(true);
         this.baseModel.setStrictMode(false); //allows not declared classes
-        
-        this.fullModel = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM_RDFS_INF, this.base );
+
         this.fullModel.setDynamicImports(true);
         this.fullModel.setDerivationLogging(false);
 
@@ -252,28 +252,29 @@ public class TargetSchemaReasoner {
         this.baseModelPropList = findListOfProperties(Boolean.FALSE);
         //enableLogging();
     }
-    
-    private OntClass findClassWithURI(String uri){
-        for(OntClass oc: this.baseModelClassesList){
-            if(oc.getURI().equals(uri)) return oc;
+
+    private OntClass findClassWithURI(String uri) {
+        for (OntClass oc : this.baseModelClassesList) {
+            if (oc.getURI().equals(uri)) {
+                return oc;
+            }
         }
         return null;
     }
-    
+
     private ArrayList<OntClass> findListOfClasses(Boolean inference) {
         //disableLogging();
-        
+
         OntModel curModel;
-        if(inference){
+        if (inference) {
             curModel = this.fullModel;
-        }
-        else{
+        } else {
             curModel = this.baseModel;
         }
-        
+
         ArrayList<OntClass> listClasses = new ArrayList();
-        
-        for ( OntClass klass : curModel.listClasses().toList() ) {
+
+        for (OntClass klass : curModel.listClasses().toList()) {
             listClasses.add(klass);
         }
         //remove duplicates
@@ -289,19 +290,18 @@ public class TargetSchemaReasoner {
 
     private ArrayList<OntProperty> findListOfProperties(Boolean inference) {
         //disableLogging();
-        
+
         OntModel curModel;
-        if(inference){
+        if (inference) {
             curModel = this.fullModel;
-        }
-        else{
+        } else {
             curModel = this.baseModel;
         }
-        
+
         ArrayList<OntProperty> listProps = new ArrayList();
-        for ( OntClass klass : curModel.listClasses().toList() ) {
+        for (OntClass klass : curModel.listClasses().toList()) {
             if (klass != null) {
-                ExtendedIterator itq = klass.listDeclaredProperties(false); 
+                ExtendedIterator itq = klass.listDeclaredProperties(false);
                 while (itq.hasNext()) {
                     OntProperty property = (OntProperty) itq.next();
                     if (property.getDomain() != null) {
@@ -310,20 +310,19 @@ public class TargetSchemaReasoner {
                 }
             }
         }
-            
+
         //remove duplicates
         Set<OntProperty> setItems = new LinkedHashSet(listProps);
         listProps.clear();
         listProps.addAll(setItems);
-        
-        
+
         /*for(OntProperty p: listProps){
             //System.out.println(p.toString());
         }*/
         //System.out.println("Total Properties: "+listProps.size());
         return listProps;
     }
-    
+
     private static void disableLogging() {
         List<Logger> loggers = Collections.<Logger>list(LogManager.getCurrentLoggers());
         loggers.add(LogManager.getRootLogger());
@@ -331,7 +330,7 @@ public class TargetSchemaReasoner {
             l.setLevel(Level.OFF);
         }
     }
-    
+
     private static void enableLogging() {
         List<Logger> loggers = Collections.<Logger>list(LogManager.getCurrentLoggers());
         loggers.add(LogManager.getRootLogger());

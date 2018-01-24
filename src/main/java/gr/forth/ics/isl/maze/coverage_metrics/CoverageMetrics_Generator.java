@@ -83,7 +83,7 @@ public class CoverageMetrics_Generator {
         
         //Run metrics for all target schemata
         //******************************
-        List<TargetInfo> targetFiles = this.x3ml.getInfo().getTargetInfo();
+        List<TargetInfo> targetFiles = this.x3ml.getInfo().getTarget().getTargetInfo();
         Model fullModel = ModelFactory.createDefaultModel();
         for(TargetInfo ti: targetFiles){
             String schemaFile = ti.getTargetSchema().getSchemaFile();
@@ -119,7 +119,7 @@ public class CoverageMetrics_Generator {
         HashMap<String, String> x3mlClasses = X3MLUtils.findReferencedClasses(this.x3mlDocument, this.x3ml);
         HashMap<String, String> x3mlProp = X3MLUtils.findReferencedProperties(this.x3mlDocument, this.x3ml);
         
-            List<TargetInfo> targetFiles = this.x3ml.getInfo().getTargetInfo();
+            List<TargetInfo> targetFiles = this.x3ml.getInfo().getTarget().getTargetInfo();
             for(TargetInfo ti: targetFiles){
                 String schemaFile = ti.getTargetSchema().getSchemaFile();
                 if(schemaFile != null){
@@ -127,13 +127,12 @@ public class CoverageMetrics_Generator {
 
                     //Set info fields
                     singleTSMetrics.setFileName(schemaFile);
-                    singleTSMetrics.setName(ti.getTargetSchema().getvalue());
+                    singleTSMetrics.setName(ti.getTargetSchema().getValue());
                     singleTSMetrics.setType(ti.getTargetSchema().getType());
                     singleTSMetrics.setVersion(ti.getTargetSchema().getVersion());
                     
                     //create reasoner
                     TargetSchemaReasoner reasoner = new TargetSchemaReasoner(schemaFile);
-                    
                     //run metrics
                     TSMetrics tSMetrics = new TSMetrics();
                     TSDirectMetric tSDirectMetric = new TSDirectMetric();

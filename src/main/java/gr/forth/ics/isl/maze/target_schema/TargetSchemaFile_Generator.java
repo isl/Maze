@@ -33,12 +33,13 @@ import org.apache.log4j.Logger;
  * @author Anyfantis Nikos (nanifant 'at' ics 'dot' forth 'dot' gr)
  */
 public class TargetSchemaFile_Generator {
+
     private static Logger logger = Logger.getLogger(TargetSchemaFile_Generator.class);
     private TargetSchemaFile tsFile;
     private TargetSchemaReasoner tsReasoner;
-    
-    public TargetSchemaFile createTargetSchemaFile(String schemaFile, TargetSchema targetSchema){
-        try{
+
+    public TargetSchemaFile createTargetSchemaFile(String schemaFile, TargetSchema targetSchema) {
+        try {
             this.tsFile = new TargetSchemaFile();
             this.tsReasoner = new TargetSchemaReasoner(schemaFile);
             saveFileParameters(schemaFile, targetSchema);
@@ -46,99 +47,102 @@ public class TargetSchemaFile_Generator {
             savePropertiesOfFile();
             saveFileMetrics();
             return this.tsFile;
-        }
-        catch(Exception ex){
-            logger.error("Cannot generate target schema file for: "+schemaFile, ex);
+        } catch (Exception ex) {
+            logger.error("Cannot generate target schema file for: " + schemaFile, ex);
             return null;
         }
     }
-    
-    private void saveFileParameters(String schemaFile, TargetSchema currentTS){
+
+    private void saveFileParameters(String schemaFile, TargetSchema currentTS) {
         this.tsFile.setFileName(schemaFile);
-        this.tsFile.setName(currentTS.getvalue());
+        this.tsFile.setName(currentTS.getValue());
         this.tsFile.setType(currentTS.getType());
         this.tsFile.setVersion(currentTS.getVersion());
     }
-    
-    private void saveFileMetrics(){
+
+    private void saveFileMetrics() {
         TargetSchemaMetrics metrics = new TargetSchemaMetrics();
-        
+
         ArrayList<OntClass> classList = this.tsReasoner.getModelClassesList(Boolean.FALSE);
         metrics.setClassCount(classList.size());
-        
+
         ArrayList<OntProperty> propsList = this.tsReasoner.getModelPropList();
         metrics.setPropertyCount(propsList.size());
-        
+
         metrics.setSubClassCount(0);
         metrics.setSubPropertyCount(0);
-        
+
         this.tsFile.setTargetSchemaMetrics(metrics);
     }
-    
-    private void saveClassesOfFile(){
-        try{
+
+    private void saveClassesOfFile() {
+        try {
+          //  System.out.println("--------------------CLASSES---------------------------------------------");
             ArrayList<OntClass> classesList = this.tsReasoner.getModelClassesList(Boolean.FALSE);
             //double allClassesSize = (double)this.tsReasoner.getModelClassesList(Boolean.TRUE).size();
-            if(classesList!=null){
-                for(OntClass c: classesList){
-                    TS_Class tsClass = new TS_Class();
-                    tsClass.setUri(c.getURI());
-                    String label = c.getURI().replace(c.getNameSpace(), "");
-                    tsClass.setLabel(label);
-                    double strength = this.tsReasoner.getSubclassesOfClass(c, Boolean.TRUE).size();
-                    tsClass.setSize(strength);
-                    String comment;
-                    try{
-                        comment = c.getComment(null);
-                        if(comment.length()>300) comment = comment.substring(0, 200)+"...";
+            if (classesList != null) {
+                for (OntClass c : classesList) {
+                    // System.out.println("class- > "+c.getURI() );
+                    if (c.getURI() != null) {
+                        TS_Class tsClass = new TS_Class();
+                        tsClass.setUri(c.getURI());
+                        String label = c.getURI().replace(c.getNameSpace(), "");
+                        tsClass.setLabel(label);
+                        double strength = this.tsReasoner.getSubclassesOfClass(c, Boolean.TRUE).size();
+                        tsClass.setSize(strength);
+                        String comment;
+                        try {
+                            comment = c.getComment(null);
+                            if (comment.length() > 300) {
+                                comment = comment.substring(0, 200) + "...";
+                            }
+                        } catch (NullPointerException e) {
+                            comment = "";
+                        }
+                        tsClass.setComment(comment);
+                        tsClass.setNamespace(c.getNameSpace());
+                        try {
+                            ArrayList<String> subClassesList = this.tsReasoner.getSubclassesOfClass(c, Boolean.FALSE);
+                            tsClass.setSubclasses(subClassesList);
+                        } catch (Exception e) {
+                            logger.error("Cannot find subclasses of " + c.getURI(), e);
+                        }
+                        tsClass.setTriangles(this.tsReasoner.searchForTriangles(c));
+                        this.tsFile.addClass(tsClass);
                     }
-                    catch(NullPointerException e){
-                        comment = "";
-                    }
-                    tsClass.setComment(comment);
-                    tsClass.setNamespace(c.getNameSpace());
-                    try{
-                        ArrayList<String> subClassesList = this.tsReasoner.getSubclassesOfClass(c, Boolean.FALSE);
-                        tsClass.setSubclasses(subClassesList);
-                    }catch(Exception e){
-                        logger.error("Cannot find subclasses of "+c.getURI(), e);
-                    }
-                    tsClass.setTriangles(this.tsReasoner.searchForTriangles(c));
-                    this.tsFile.addClass(tsClass);
                 }
             }
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             logger.error("Cannot find classes of target schema.", ex);
         }
     }
 
-    private void savePropertiesOfFile(){
+    private void savePropertiesOfFile() {
         ArrayList<OntProperty> propList = this.tsReasoner.getModelPropList();
-        try{
-            for(OntProperty p: propList){
+        try {
+            for (OntProperty p : propList) {
                 TS_Property tsProp = new TS_Property();
                 tsProp.setUri(p.getURI());
                 String label = p.getURI().replace(p.getNameSpace(), "");
                 tsProp.setLabel(label);
                 tsProp.setNamespace(p.getNameSpace());
                 String comment;
-                try{
+                try {
                     comment = p.getComment(null);
-                    if(comment.length()>200) comment = comment.substring(0, 200)+"...";
-                }
-                catch(NullPointerException e){
+                    if (comment.length() > 200) {
+                        comment = comment.substring(0, 200) + "...";
+                    }
+                } catch (NullPointerException e) {
                     comment = "";
                 }
                 tsProp.setComment(comment);
                 tsProp.setSubproperties(this.tsReasoner.getSubpropertiesOfProperty(p, Boolean.FALSE));
-                
+
                 tsProp.setDomain(this.tsReasoner.getDomainOfProperty(p));
                 tsProp.setRange(this.tsReasoner.getRangeOfProperty(p));
                 this.tsFile.addProperty(tsProp);
             }
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             logger.error("Cannot find properties of target schema.", ex);
         }
     }

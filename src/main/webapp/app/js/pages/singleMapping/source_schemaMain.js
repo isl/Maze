@@ -13,7 +13,7 @@ function initSourceSchemaPage() {
     //Demo for jointjs: DrawSourceSchemaGraphDemo();
     
     var mapping = $.parseJSON(sessionStorage.Mapping);
-    var type = mapping.info.source_info.source_schema.type;
+    var type = mapping.info.source.source_info.source_schema.type;
     if (type.toLowerCase() === 'er'){   
         AjaxRequests.SingleMapping.GetERSourceSchema(sessionStorage.MappingID);
     }
@@ -108,13 +108,13 @@ function appendExcludingResultsSS(data){
 function RenderSourceSchemaDetails() {
 
     var mapping = $.parseJSON(sessionStorage.Mapping);
-    var schema = mapping.info.source_info.source_schema.$;
+    var schema = mapping.info.source.source_info.source_schema.$;
     if (schema === '')   schema = 'Not Available';
-    var type = mapping.info.source_info.source_schema.type;
+    var type = mapping.info.source.source_info.source_schema.type;
     if (type === '')   type = 'Not Available';
-    var version = mapping.info.source_info.source_schema.version;
+    var version = mapping.info.source.source_info.source_schema.version;
     if (version === '') version = 'Not Available';
-    var collection = mapping.info.source_info.source_collection;
+    var collection = mapping.info.source.source_info.source_collection;
     if (collection === '')  collection = 'Not Available';
 
     $('#source_schema .source_schema_info .schema').text(schema);

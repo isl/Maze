@@ -44,7 +44,7 @@ public class MappingTargetSchemata {
     private ArrayList<TargetSchemaFile> TargetSchemaFile;
     
     public MappingTargetSchemata(X3ML x3mlObj){
-        for(TargetInfo ti: x3mlObj.getInfo().getTargetInfo()){
+        for(TargetInfo ti: x3mlObj.getInfo().getTarget().getTargetInfo()){
             String schemaFile = ti.getTargetSchema().getSchemaFile();
             TargetSchema ts = ti.getTargetSchema();
             if(schemaFile!=null){

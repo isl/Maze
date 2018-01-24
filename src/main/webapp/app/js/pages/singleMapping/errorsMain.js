@@ -118,7 +118,7 @@ function evaluateMapping(mapping){
     
     //evaluate source schema
     try{
-        var source_schema = mapping.info.source_info.source_schema;
+        var source_schema = mapping.info.source.source_info.source_schema;
         var example_data_info = mapping.info.example_data_info;
         
         var version = source_schema.version;
@@ -140,7 +140,7 @@ function evaluateMapping(mapping){
     
     //evaluate target schema
     try{
-        var target_info = mapping.info.target_info;
+        var target_info = mapping.info.target.target_info;
         
         var tiList = target_info === null ? [] : (target_info instanceof Array ? target_info : [target_info]); 
         if(tiList.length === 0){

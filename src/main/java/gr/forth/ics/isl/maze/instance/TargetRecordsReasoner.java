@@ -34,6 +34,8 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import gr.forth.ics.isl.maze.Utils.SparQLQueries;
 import gr.forth.ics.isl.maze.Utils.Utils;
 import java.util.ArrayList;
@@ -44,36 +46,37 @@ import org.apache.log4j.Logger;
  * @author Anyfantis Nikos (nanifant 'at' ics 'dot' forth 'dot' gr)
  */
 public class TargetRecordsReasoner {
-    
+
     private Logger logger = Logger.getLogger(TargetRecordsReasoner.class);
     private Model base;
     private OntModel baseModel;
     private OntModel fullModel;
     private ArrayList<Individual> individualsList;
     private ArrayList<OntClass> classesList;
-    
-    public TargetRecordsReasoner(String fileName){
-        try{
-            if(fileName == null) throw new NullPointerException();
-            
+
+    public TargetRecordsReasoner(String fileName) {
+        try {
+            if (fileName == null) {
+                throw new NullPointerException();
+            }
+
             Model curModel = Utils.retreiveDataRecords_from3M_toBaseOntModel(fileName);
             initReasoner(curModel);
-            logger.info("======== Finish Target Records initialization: "+ fileName);
-        }
-        catch(Exception ex){
-            logger.error("Cannot InitModel: "+fileName, ex);
+            logger.info("======== Finish Target Records initialization: " + fileName);
+        } catch (Exception ex) {
+            logger.error("Cannot InitModel: " + fileName, ex);
         }
     }
-    
-    public ArrayList<Individual> getIndividuals(){
+
+    public ArrayList<Individual> getIndividuals() {
         return this.individualsList;
     }
-    
-    public ArrayList<OntClass> getAllClasses(){
+
+    public ArrayList<OntClass> getAllClasses() {
         return this.classesList;
     }
-    
-    public ArrayList<Property> getOutgoingPropertiesOfIndividual(Individual ind){
+
+    public ArrayList<Property> getOutgoingPropertiesOfIndividual(Individual ind) {
         try {
             ArrayList<Property> results = new ArrayList<>();
 
@@ -90,8 +93,8 @@ public class TargetRecordsReasoner {
             return new ArrayList<>();
         }
     }
-    
-    public ArrayList<String> getClassTypesOfIndividual(Individual ind){
+
+    public ArrayList<String> getClassTypesOfIndividual(Individual ind) {
         try {
             ArrayList<String> results = new ArrayList<>();
 
@@ -107,20 +110,20 @@ public class TargetRecordsReasoner {
             return new ArrayList<>();
         }
     }
-    
-    public ArrayList<Property> getIncomingPropertiesOfIndividual(Individual ind){
+
+    public ArrayList<Property> getIncomingPropertiesOfIndividual(Individual ind) {
         try {
             ArrayList<Property> results = new ArrayList<>();
 
             Query query = QueryFactory.create(SparQLQueries.GetIncomingProperties(ind));
             QueryExecution qe = QueryExecutionFactory.create(query, this.baseModel);
             ResultSet resultset = qe.execSelect();
-            
-            while (resultset.hasNext()) { 
+
+            while (resultset.hasNext()) {
                 final QuerySolution qs = resultset.next();
                 String propURI = qs.get("p").toString();
                 Property prop = this.fullModel.getProperty(propURI);
-                if(prop != null){
+                if (prop != null) {
                     results.add(prop);
                 }
             }
@@ -133,22 +136,22 @@ public class TargetRecordsReasoner {
             return new ArrayList<>();
         }
     }
-    
-    public ArrayList<String> getSubjectOfPropertyAndIndividual(Property prop, Individual ind){
+
+    public ArrayList<String> getSubjectOfPropertyAndIndividual(Property prop, Individual ind) {
         try {
             ArrayList<String> results = new ArrayList<>();
 
             Query query = QueryFactory.create(SparQLQueries.GetSubjectWithPropertiyAndIndividual(prop, ind));
             QueryExecution qe = QueryExecutionFactory.create(query, this.baseModel);
             ResultSet resultset = qe.execSelect();
-            
-            while (resultset.hasNext()) { 
+
+            while (resultset.hasNext()) {
                 final QuerySolution qs = resultset.next();
                 String subjURI = qs.get("s").toString();
                 results.add(subjURI);
                 //System.out.println(subjURI);
             }
-           //ResultSetFormatter.out(System.out, resultset, query);
+            //ResultSetFormatter.out(System.out, resultset, query);
             qe.close();
 
             return results;
@@ -157,31 +160,32 @@ public class TargetRecordsReasoner {
             return new ArrayList<>();
         }
     }
-    
-    private void initReasoner(Model model){
+
+    private void initReasoner(Model model) {
         this.base = model;
-        this.baseModel = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM, this.base );
+        this.baseModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM, this.base);
+        this.fullModel = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_RDFS_INF, this.base);
+
         this.baseModel.setDerivationLogging(false);
         this.baseModel.setDynamicImports(true);
         this.baseModel.setStrictMode(false); //allows not declared classes
-        
-        this.fullModel = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM_RDFS_INF, this.base );
+
         this.fullModel.setDynamicImports(true);
         this.fullModel.setDerivationLogging(false);
-        
+
         findAllInstancesAndClasses();
     }
-    
-    private void findAllInstancesAndClasses(){
+
+    private void findAllInstancesAndClasses() {
         this.individualsList = new ArrayList<>();
         this.classesList = new ArrayList<>();
-        
+
         ExtendedIterator classes = this.fullModel.listClasses();
         while (classes.hasNext()) {
             OntClass thisClass = (OntClass) classes.next();
             String curi = thisClass.getURI();
-            
-            if(!curi.startsWith("http://www.w3.org")){
+
+            if (!curi.startsWith("http://www.w3.org")) {
                 this.classesList.add(thisClass);
                 ExtendedIterator instances = thisClass.listInstances();
                 while (instances.hasNext()) {

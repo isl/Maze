@@ -13,8 +13,8 @@ var GlobalResources = {
         CacheMode : true    //NOT SUPPORTED YET! get data if they are not cached already
     },
     Services : {
-        ServerURL: 'http://'+window.location.hostname+':8080',
-        RestService: 'http://'+window.location.hostname+':8080/Maze/webresources',
+        ServerURL: 'http://'+window.location.hostname+'',
+        RestService: 'http://'+window.location.hostname+'/Maze/webresources',
         TargetSchemaService:'http://139.91.183.3/3MEditor/FetchBinFile?type=target_info&file='
     }
 };

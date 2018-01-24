@@ -6,7 +6,7 @@
 
 function  initOntologyOverviewPage(){
     var mapping = $.parseJSON(sessionStorage.Mapping);
-    var type = mapping.info.source_info.source_schema.type;
+    var type = mapping.info.source.source_info.source_schema.type;
     if (type.toLowerCase() === 'er'){   
         CurrentModeOntologyPage = OntologyPageMode.ER;
         AjaxRequests.SingleMapping.GetERMappingRules();

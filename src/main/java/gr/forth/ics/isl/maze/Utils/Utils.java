@@ -53,13 +53,31 @@ import org.w3c.dom.*;
 
 /**
  * Provides helpers and functions for retrieving files from 3M service.
+ *
  * @author Anyfantis Nikos (nanifant 'at' ics 'dot' forth 'dot' gr)
  */
 public class Utils {
+
     private static Logger logger = Logger.getLogger(Utils.class);
-    
+    private static final HashMap<String, String> langs = new HashMap<String, String>();
+
+    static {
+        langs.put(".ttl", "Turtle");
+        langs.put(".nt", "N-Triples");
+        langs.put(".nq", "N-Quads");
+        langs.put(".trig", "TriG");
+        langs.put(".rdf", "RDF/XML");
+        langs.put(".owl", "N-Triples");
+        langs.put(".jsonld", "JSON-LD");
+        langs.put(".trdf", "RDF Thrift");
+        langs.put(".rt", "RDF Thrift");
+        langs.put(".rj", "RDF/JSON");
+        langs.put(".trix", "TriX");
+    }
+
     /**
      * Unmarshal an X3ML file from 3M
+     *
      * @param x3mlID
      * @return an X3ML Instance
      */
@@ -67,46 +85,45 @@ public class Utils {
         try {
             String uri = Resources.getServiceURL_X3ML() + x3mlID;
             InputStream inputStream;
-            if(Resources.getIfHTTPS()){
+            if (Resources.getIfHTTPS()) {
                 HttpsClient https = new HttpsClient(uri);
                 inputStream = https.getInputStream();
-            }
-            else{
+            } else {
                 HttpClient http = new HttpClient(uri);
                 inputStream = http.getInputStream();
             }
-            Reader reader = new InputStreamReader(inputStream,"UTF-8");
+            Reader reader = new InputStreamReader(inputStream, "UTF-8");
             InputSource is = new InputSource(reader);
             is.setEncoding("UTF-8");
-            
+
             //SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             JAXBContext jc = JAXBContext.newInstance(X3ML.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
             X3ML x3ml = (X3ML) unmarshaller.unmarshal(is);
             return x3ml;
         } catch (JAXBException ex) {
-            logger.error("Cannot retreive X3ML file form Service",ex);
+            logger.error("Cannot retreive X3ML file form Service", ex);
             return null;
         } catch (IOException ex) {
-            logger.error("Cannot retreive X3ML file form Service",ex);
+            logger.error("Cannot retreive X3ML file form Service", ex);
             return null;
         }
     }
-    
+
     /**
      * Gets X3ML file and converts to Document(xml).
+     *
      * @param x3mlID String X3ML Id
      * @return Document Document(xml)of X3ML
      */
-    public static Document retreiveX3MLfile_toXML(String x3mlID){
+    public static Document retreiveX3MLfile_toXML(String x3mlID) {
         try {
             String uri = Resources.getServiceURL_X3ML() + x3mlID;
             InputStream inputStream;
-            if(Resources.getIfHTTPS()){
+            if (Resources.getIfHTTPS()) {
                 HttpsClient https = new HttpsClient(uri);
                 inputStream = https.getInputStream();
-            }
-            else{
+            } else {
                 HttpClient http = new HttpClient(uri);
                 inputStream = http.getInputStream();
             }
@@ -118,171 +135,173 @@ public class Utils {
             DocumentBuilder db = null;
             db = dbf.newDocumentBuilder();
             db.setEntityResolver(new NullResolver());
-            
-            Reader reader = new InputStreamReader(inputStream,"UTF-8");
+
+            Reader reader = new InputStreamReader(inputStream, "UTF-8");
             InputSource is = new InputSource(reader);
             is.setEncoding("UTF-8");
-            
+
             Document x3ml = db.parse(is);
             return x3ml;
         } catch (MalformedURLException ex) {
-            logger.error("Cannot retreive X3ML file form Service",ex);
+            logger.error("Cannot retreive X3ML file form Service", ex);
             return null;
         } catch (IOException ex) {
-            logger.error("Cannot retreive X3ML file form Service",ex);
+            logger.error("Cannot retreive X3ML file form Service", ex);
             return null;
         } catch (SAXException | ParserConfigurationException ex) {
-            logger.error("Cannot retreive X3ML file form Service",ex);
+            logger.error("Cannot retreive X3ML file form Service", ex);
             return null;
         }
     }
-    
+
     /**
      * Gets source schema file and converts to Document(xml) from 3M service.
+     *
      * @param filename String file name
      * @return Document Document(xml)of X3ML
      */
-    public static Document retreiveSourceSchema_from3M_toXML(String filename){
+    public static Document retreiveSourceSchema_from3M_toXML(String filename) {
         try {
             String uri = Resources.getServiceURL_SourceSchema() + URLEncoder.encode(filename, "UTF-8");
             InputStream inputStream;
-            if(Resources.getIfHTTPS()){
+            if (Resources.getIfHTTPS()) {
                 HttpsClient https = new HttpsClient(uri);
                 inputStream = https.getInputStream();
-            }
-            else{
+            } else {
                 HttpClient http = new HttpClient(uri);
                 inputStream = http.getInputStream();
             }
-            
+
             Document doc = convert_InputStream_toXML(inputStream);
             return doc;
         } catch (IOException ex) {
-            logger.error("Cannot retreive file form 3M Service",ex);
+            logger.error("Cannot retreive file form 3M Service", ex);
             return null;
         } catch (SAXException | ParserConfigurationException ex) {
-            logger.error("Cannot convert Input Stream to Document",ex);
+            logger.error("Cannot convert Input Stream to Document", ex);
             return null;
         }
     }
-    
+
     /**
      * Gets versions from 3M service.
+     *
      * @param MappingId String mapping id
      * @return Document Document(xml)
      */
-    public static Document retreiveVersions_from3M_toXML(String MappingId){
+    public static Document retreiveVersions_from3M_toXML(String MappingId) {
         try {
             String uri = Resources.getServiceURL_GetVersions() + MappingId;
             InputStream inputStream;
-            if(Resources.getIfHTTPS()){
+            if (Resources.getIfHTTPS()) {
                 HttpsClient https = new HttpsClient(uri);
                 inputStream = https.getInputStream();
-            }
-            else{
+            } else {
                 HttpClient http = new HttpClient(uri);
                 inputStream = http.getInputStream();
             }
-            
+
             Document doc = convert_InputStream_toXML(inputStream);
             return doc;
         } catch (IOException ex) {
-            logger.error("Cannot retreive versions file form 3M Service",ex);
+            logger.error("Cannot retreive versions file form 3M Service", ex);
             return null;
         } catch (SAXException | ParserConfigurationException ex) {
-            logger.error("Cannot convert Input Stream to Document for versions",ex);
+            logger.error("Cannot convert Input Stream to Document for versions", ex);
             return null;
         }
     }
-    
+
     /**
      * Gets versioned X3ML from 3M service.
+     *
      * @param MappingId String mapping id
      * @param VersionId String version id
      * @return Document Document(xml)
      */
-    public static Document retreiveVersionX3ML_from3M_toXML(String MappingId, String VersionId){
+    public static Document retreiveVersionX3ML_from3M_toXML(String MappingId, String VersionId) {
         try {
             String uri = Resources.getServiceURL_VersionedX3ML(MappingId, VersionId);
             InputStream inputStream;
-            if(Resources.getIfHTTPS()){
+            if (Resources.getIfHTTPS()) {
                 HttpsClient https = new HttpsClient(uri);
                 inputStream = https.getInputStream();
-            }
-            else{
+            } else {
                 HttpClient http = new HttpClient(uri);
                 inputStream = http.getInputStream();
             }
-            
+
             Document doc = convert_InputStream_toXML(inputStream);
             return doc;
         } catch (IOException ex) {
-            logger.error("Cannot retreive versioned X3ML form 3M Service",ex);
+            logger.error("Cannot retreive versioned X3ML form 3M Service", ex);
             return null;
         } catch (SAXException | ParserConfigurationException ex) {
-            logger.error("Cannot convert Input Stream to Document for versions",ex);
+            logger.error("Cannot convert Input Stream to Document for versions", ex);
             return null;
         }
     }
-    
+
     /**
      * Gets target schema file and converts to Model from 3M service.
+     *
      * @param filename String file name
      * @return Model from constructor: ModelFactory.createDefaultModel().
      */
-    public static Model retreiveOntology_from3M_toBaseOntModel(String filename){
+    public static Model retreiveOntology_from3M_toBaseOntModel(String filename) {
         try {
             String uri = Resources.getServiceURL_TargetSchema() + URLEncoder.encode(filename, "UTF-8");
             InputStream inputStream;
-            if(Resources.getIfHTTPS()){
+            if (Resources.getIfHTTPS()) {
                 HttpsClient https = new HttpsClient(uri);
                 inputStream = https.getInputStream();
-            }
-            else{
+            } else {
                 HttpClient http = new HttpClient(uri);
                 inputStream = http.getInputStream();
             }
-            
+            String ext = filename.substring(filename.lastIndexOf("."));
             final Model base = ModelFactory.createDefaultModel();
-            base.read(inputStream, null);
-            
+            base.read(inputStream, null, langs.get(ext));
+
             return base;
         } catch (Exception ex) {
-            logger.error("Cannot retreive target file form 3M Service ("+filename+")",ex);
+            logger.error("Cannot retreive target file form 3M Service (" + filename + ")", ex);
             return null;
-        } 
+        }
     }
-    
+
     /**
      * Gets target records file and converts to Model from 3M service.
+     *
      * @param filename String file name
      * @return Model from constructor: ModelFactory.createDefaultModel().
      */
-    public static Model retreiveDataRecords_from3M_toBaseOntModel(String filename){
+    public static Model retreiveDataRecords_from3M_toBaseOntModel(String filename) {
         try {
             String uri = Resources.getServiceURL_DataRecords() + URLEncoder.encode(filename, "UTF-8");
             InputStream inputStream;
-            if(Resources.getIfHTTPS()){
+            if (Resources.getIfHTTPS()) {
                 HttpsClient https = new HttpsClient(uri);
                 inputStream = https.getInputStream();
-            }
-            else{
+            } else {
                 HttpClient http = new HttpClient(uri);
                 inputStream = http.getInputStream();
             }
-            
+
+            String ext = filename.substring(filename.lastIndexOf("."));
             final Model base = ModelFactory.createDefaultModel();
-            base.read(inputStream, null);
-            
+            base.read(inputStream, null, langs.get(ext));
+
             return base;
         } catch (Exception ex) {
-            logger.error("Cannot retreive target record file form 3M Service ("+filename+")",ex);
+            logger.error("Cannot retreive target record file form 3M Service (" + filename + ")", ex);
             return null;
-        } 
+        }
     }
-    
+
     /**
      * Converts an InputStream to String.
+     *
      * @param is InputStream the input is
      * @return String output.
      */
@@ -297,21 +316,22 @@ public class Utils {
                 sb.append(line);
             }
         } catch (IOException ex) {
-            logger.error("Cannot convert input stream to string",ex);
+            logger.error("Cannot convert input stream to string", ex);
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    logger.error("Cannot close BufferedReader",e);
+                    logger.error("Cannot close BufferedReader", e);
                 }
             }
         }
         return sb.toString();
     }
-    
+
     /**
      * Converts an InputStream to Document (XML).
+     *
      * @param is InputStream the input is
      * @return Document output.
      */
@@ -322,20 +342,20 @@ public class Utils {
         dbf.setIgnoringComments(false);
         dbf.setIgnoringElementContentWhitespace(true);
         dbf.setNamespaceAware(true);
-        
+
         DocumentBuilder db = null;
         db = dbf.newDocumentBuilder();
         db.setEntityResolver(new NullResolver());
-
         return db.parse(is);
     }
-    
+
     /**
      * Removes duplicates for arrayList of strings.
+     *
      * @param list ArrayList of strings
      * @return Document output.
      */
-    public static ArrayList<String> removeDublicatesFromArrayList(ArrayList<String> list){
+    public static ArrayList<String> removeDublicatesFromArrayList(ArrayList<String> list) {
         //Remove Dublicates in lists
         Set<String> hs = new HashSet<>();
         hs.addAll(list);
@@ -343,26 +363,27 @@ public class Utils {
         list.addAll(hs);
         return list;
     }
-    
+
     /**
      * Order an X3ML document in the XML form
+     *
      * @param unsortedDoc Document
      * @return Document sorted doc.
      */
-    public static Document sortX3MLDoument(Document unsortedDoc){
-        try{
+    public static Document sortX3MLDoument(Document unsortedDoc) {
+        try {
 
             HashMap<Node, String> mappingsMap = new HashMap<>();
             HashMap<Element, String> mappingsELEMMap = new HashMap<>();
-            
+
             ArrayList<String> mappingSourceNodes = new ArrayList<>();
             NodeList mappings = unsortedDoc.getElementsByTagName("mapping");
             for (int i = 0; i < mappings.getLength(); i++) {
                 Node mapping = mappings.item(i);
-                
+
                 XPath xpath = XPathFactory.newInstance().newXPath();
                 XPathExpression expr = xpath.compile("./domain/source_node/text()");
-                
+
                 Object result = expr.evaluate(mapping, XPathConstants.NODESET);
                 NodeList nodes = (NodeList) result;
                 for (int j = 0; j < nodes.getLength(); j++) {
@@ -370,25 +391,24 @@ public class Utils {
                     mappingsMap.put(mapping, nodes.item(j).getNodeValue() + i);
                 }
             }
-            
-            
+
             for (Map.Entry<Node, String> entry : mappingsMap.entrySet()) {
                 Node linkNode = entry.getKey();
                 Element linkElem = (Element) linkNode;
                 String VALUE = entry.getValue();
-                
+
                 HashMap<Node, String> linksMap = new HashMap<>();
                 ArrayList<String> linkSourceNodes = new ArrayList<>();
                 Node domain = linkElem.getElementsByTagName("domain").item(0);
                 Element domainElem = (Element) domain;
-                
+
                 NodeList links = linkElem.getElementsByTagName("link");
                 for (int i = 0; i < links.getLength(); i++) {
                     Node link = links.item(i);
-                    
+
                     XPath xpath = XPathFactory.newInstance().newXPath();
                     XPathExpression expr = xpath.compile("./path/source_relation/relation/text()");
-                    
+
                     Object result = expr.evaluate(link, XPathConstants.NODESET);
                     NodeList nodes = (NodeList) result;
                     for (int j = 0; j < nodes.getLength(); j++) {
@@ -396,14 +416,14 @@ public class Utils {
                         linksMap.put(link, nodes.item(j).getNodeValue() + i);
                     }
                 }
-                
+
                 Collections.sort(linkSourceNodes, new Comparator<String>() {
                     @Override
                     public int compare(String s1, String s2) {
                         return s1.compareToIgnoreCase(s2);
                     }
                 });
-                
+
                 Element newMapping = unsortedDoc.createElement("mapping");
                 newMapping.appendChild(domainElem);
                 for (String sn : linkSourceNodes) {
@@ -416,17 +436,17 @@ public class Utils {
                         }
                     }
                 }
-                
+
                 mappingsELEMMap.put(newMapping, VALUE);
             }
-            
+
             Collections.sort(mappingSourceNodes, new Comparator<String>() {
                 @Override
                 public int compare(String s1, String s2) {
                     return s1.compareToIgnoreCase(s2);
                 }
             });
-            
+
             Element newMappigns = unsortedDoc.createElement("mappings");
             for (String sn : mappingSourceNodes) {
                 for (Map.Entry<Element, String> entry : mappingsELEMMap.entrySet()) {
@@ -437,37 +457,36 @@ public class Utils {
                     }
                 }
             }
-            
+
             Element root = unsortedDoc.getDocumentElement();
-            Element oldMappigns = (Element)root.getElementsByTagName("mappings").item(0);
-            
+            Element oldMappigns = (Element) root.getElementsByTagName("mappings").item(0);
+
             root.replaceChild(newMappigns, oldMappigns);
-            
+
             return unsortedDoc;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             logger.fatal("Cannot order document of X3ML.", ex);
             return unsortedDoc;
         }
     }
-    
-    public static void removeAllChildrenOfNode(Node node) 
-    {
+
+    public static void removeAllChildrenOfNode(Node node) {
         for (int i = 0; i < node.getChildNodes().getLength(); i++) {
             Node n = node.getChildNodes().item(i);
-        
-            if(n.hasChildNodes()) //edit to remove children of children
+
+            if (n.hasChildNodes()) //edit to remove children of children
             {
-              removeAllChildrenOfNode(n);
-              node.removeChild(n);
+                removeAllChildrenOfNode(n);
+                node.removeChild(n);
+            } else {
+                node.removeChild(n);
             }
-            else
-              node.removeChild(n);
         }
     }
-    
+
     //Custom Class
     static class NullResolver implements EntityResolver {
+
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
             return new InputSource(new StringReader(""));
         }
