@@ -45,7 +45,7 @@ This file is part of the Mapping Analyze (Maze) app.
         <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
-                <version>4.2.3.RELEASE</version>
+                <version>5.2.20.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
